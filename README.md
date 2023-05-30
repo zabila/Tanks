@@ -17,7 +17,7 @@ To build and run the Tanks Game project, follow these steps:
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/your-username/tanks-game.git
+   git clone https://github.com/zabila/tanks-game.git
 Open the project in your preferred IDE or text editor.
 Configure your CMake build. For example, using the command line:
 shell

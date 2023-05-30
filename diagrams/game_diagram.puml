@@ -1,0 +1,151 @@
+@startuml
+interface IDrawable {
+  +draw(): void
+}
+
+interface IMovable {
+  +position: Point
+  +speed: int
+  +move(): void
+}
+
+interface ITank {
+  +direction: Direction
+  +health: int
+  +shoot(): void
+}
+
+interface IBullet {
+  +damage: int
+}
+
+interface IWall {
+  +isDestructible: bool
+}
+
+interface IBase {
+}
+
+class CTank {
+  -direction: Direction
+  -health: int
+  -speed: int
+  -position: Point
+}
+
+class CBullet {
+  -damage: int
+  -speed: int
+  -position: Point
+}
+
+class CWall {
+  -isDestructible: bool
+  -position: Point
+}
+
+class CBase {
+  -position: Point
+}
+
+class CPlayerTank {
+}
+
+class CEnemyTank {
+}
+
+class CBrickWall {
+}
+
+class CConcreteWall {
+}
+
+class CGameManager {
+  -currentLevel: int
+  -playerTank: ITank
+  -enemyTanks: list<ITank>
+  -walls: list<IWall>
+  -base: IBase
+  +startGame(): void
+  +endGame(): void
+  +spawnEnemy(): void
+}
+
+class CLevelManager {
+  -levels: list<Level>
+  +loadLevel(level: int): void
+  +nextLevel(): void
+}
+
+class CGameController {
+  -gameManager: CGameManager
+  -levelManager: CLevelManager
+  +startGame(): void
+  +endGame(): void
+  +movePlayer(direction: Direction): void
+  +playerShoot(): void
+}
+
+class CLevelController {
+  -levelManager: CLevelManager
+  +loadLevel(level: int): void
+  +nextLevel(): void
+}
+
+interface ITankFactory {
+  +createTank(type: TankType): ITank
+}
+
+class CPlayerTankFactory implements ITankFactory {
+  +createTank(type: TankType): ITank
+}
+
+class CEnemyTankFactory implements ITankFactory {
+  +createTank(type: TankType): ITank
+}
+
+interface IWallFactory {
+  +createWall(type: WallType): IWall
+}
+
+class CBrickWallFactory implements IWallFactory {
+  +createWall(type: WallType): IWall
+}
+
+class CConcreteWallFactory implements IWallFactory {
+  +createWall(type: WallType): IWall
+}
+
+IDrawable <|.. IMovable
+IDrawable <|.. ITank
+IDrawable <|.. IBullet
+IDrawable <|.. IWall
+IDrawable <|.. IBase
+
+IMovable <|.. ITank
+IMovable <|.. IBullet
+
+ITank <|.. CTank
+IBullet <|.. CBullet
+IWall <|.. CWall
+IBase <|.. CBase
+
+CTank <|-- CPlayerTank
+CTank <|-- CEnemyTank
+
+CWall <|-- CBrickWall
+CWall <|-- CConcreteWall
+
+CGameManager ..> ITankFactory : uses
+CGameManager ..> IWallFactory : uses
+CGameManager ..> CLevelManager : uses
+CGameManager ..> CGameController : uses
+
+CGameController ..> CLevelController : uses
+
+ITankFactory <|.. CPlayerTankFactory
+ITankFactory <|.. CEnemyTankFactory
+
+IWallFactory <|.. CBrickWallFactory
+IWallFactory <|.. CConcreteWallFactory
+@enduml
