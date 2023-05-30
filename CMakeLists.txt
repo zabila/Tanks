@@ -2,20 +2,28 @@ cmake_minimum_required(VERSION 3.21)
 
 project(tanks_game LANGUAGES CXX)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+
+include_directories(${Qt5Widgets_INCLUDE_DIRS} ${QtQml_INCLUDE_DIRS})
+add_definitions(${Qt5Widgets_DEFINITIONS} ${QtQml_DEFINITIONS} ${${Qt5Quick_DEFINITIONS}})
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 COMPONENTS Core Quick REQUIRED)
+find_package(Qt5 COMPONENTS Core Quick Qml REQUIRED)
 
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "src/core/*.cpp")
 file(GLOB_RECURSE PROJECT_HEADERS CONFIGURE_DEPENDS "src/core/*.h")
-file(GLOB_RECURSE PROJECT_RESOURCES CONFIGURE_DEPENDS "src/qml/*.qml")
 
-add_library(tanks_game_lib STATIC ${PROJECT_SOURCES})
+qt5_add_resources(QRC_SOURCES qml.qrc)
 
-add_executable(${PROJECT_NAME} "src/main.cpp" ${PROJECT_RESOURCES} ${PROJECT_HEADERS} ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} ${PROJECT_HEADERS} ${PROJECT_SOURCES} ${QRC_SOURCES} src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} tanks_game_lib Qt5::Core Qt5::Quick)
+target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Quick Qt5::Qml)
 
 if(ENABLED_TESTS)
     enable_testing()
