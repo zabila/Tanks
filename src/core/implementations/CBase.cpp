@@ -9,5 +9,13 @@ void CBase::initialize()
 
 void CBase::draw()
 {
+    if (isDrawn_)
+        return;
+
+    isDrawn_ = true;
     Log(INFO) << "Base is drawn";
+}
+PointWrapper *CBase::position() const
+{
+    return position_.get();
 }

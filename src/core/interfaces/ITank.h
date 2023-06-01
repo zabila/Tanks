@@ -8,11 +8,8 @@
 class ITank : public IDrawable, public IMovable
 {
 public:
-    virtual ~ITank() = default;
+    ~ITank() override = default;
     virtual void shoot() = 0;
-
-protected:
-    int health_{};
 };
 
 Q_DECLARE_INTERFACE(ITank, "com.example.ITank")

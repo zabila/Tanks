@@ -4,8 +4,8 @@
 
 #include "interfaces/IWallFactory.h"
 
-class CWallFactory : public IWallFactory
+class CWallFactory final : public IWallFactory
 {
 public:
-    std::unique_ptr<IWall> createWall(EWallsType type) override;
+    std::shared_ptr<IWall> createWall(EWallsType type, Point position) override;
 };

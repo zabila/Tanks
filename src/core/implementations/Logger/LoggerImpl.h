@@ -20,9 +20,3 @@ private:
     QFile qFile;
     QMutex qMutex;
 };
-
-extern LoggerImpl *g_logger;
-
-inline LoggerImpl &Log(LogType type) {
-    return *g_logger;
-}

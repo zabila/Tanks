@@ -12,5 +12,5 @@ public:
         CONCRETE,
     };
 
-    virtual std::unique_ptr<IWall> createWall(EWallsType type) = 0;
+    virtual std::shared_ptr<IWall> createWall(EWallsType type, Point position) = 0;
 };

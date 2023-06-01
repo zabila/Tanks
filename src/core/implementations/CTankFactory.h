@@ -1,9 +1,11 @@
 #pragma once
 
+#include <memory>
+
 #include "interfaces/ITankFactory.h"
 
-class CTankFactory : public ITankFactory
+class CTankFactory final : public ITankFactory
 {
 public:
-    std::unique_ptr<ITank> createTank(ETankType type) override;
+    std::shared_ptr<ITank> createTank(ETankType type, Point position) override;
 };

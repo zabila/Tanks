@@ -1,17 +1,21 @@
 #pragma once
 
+#include <memory>
+
 #include <QObject>
 
 #include "interfaces/IBase.h"
-#include "interfaces/IDrawable.h"
 
-#include "pod/Point.h"
-
-class CBase : public QObject, public IBase, public IDrawable
+class CBase final : public QObject, public IBase
 {
     Q_OBJECT
     Q_INTERFACES(IBase IDrawable)
 public:
     Q_INVOKABLE void draw() override;
     Q_INVOKABLE void initialize() override;
+    Q_INVOKABLE PointWrapper *position() const override;
+
+private:
+    std::unique_ptr<PointWrapper> position_;
+    bool isDrawn_;
 };

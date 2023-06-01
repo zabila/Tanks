@@ -1,21 +1,25 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 
 #include "Logger.h"
-#include "managers/CGameManager.h"
+#include "managers/CControllerManager.h"
 
 int main(int argc, char *argv[])
 {
     g_logger = new LoggerImpl("log.txt");
 
     QGuiApplication app(argc, argv);
+
+    qRegisterMetaType<PointWrapper>("PointWrapper");
+    qmlRegisterType<CPlayerTank>("CustomTypes", 1, 0, "CPlayerTank");
+
+    qRegisterMetaType<EDirection>("EDirection");
+    qmlRegisterUncreatableType<MyEnum>("MyEnums", 1, 0, "EDirection", QStringLiteral("Cannot create objects of type MyEnum"));
+
+
     QQmlApplicationEngine engine;
-
-    CGameManager gameManager;
-    auto *context = engine.rootContext();
-    context->setContextProperty("gameManager", &gameManager);
-
+    CControllerManager controllerManager;
+    controllerManager.initializeAll(&engine);
     engine.load(QUrl(QStringLiteral("qrc:src/qml/main.qml")));
 
     if (engine.rootObjects().isEmpty())
@@ -26,5 +30,5 @@ int main(int argc, char *argv[])
     delete g_logger;
     g_logger = nullptr;
 
-    return 0;
+    return ret;
 }

@@ -5,17 +5,17 @@
 #include "CEnemyTank.h"
 #include "CPlayerTank.h"
 
-std::unique_ptr<ITank> CTankFactory::createTank(ETankType type)
+std::shared_ptr<ITank> CTankFactory::createTank(ETankType type, Point position)
 {
     switch (type) {
     case ETankType::PLAYER:
-        return std::make_unique<CPlayerTank>();
+        return std::make_shared<CPlayerTank>(nullptr, position);
     case ETankType::LIGHT:
-        return std::make_unique<CEmemyTank>();
+        return std::make_shared<CEmemyTank>(nullptr, position);
     case ETankType::MEDIUM:
-        return std::make_unique<CEmemyTank>();
+        return std::make_shared<CEmemyTank>(nullptr, position);
     case ETankType::HEAVY:
-        return std::make_unique<CEmemyTank>();
+        return std::make_shared<CEmemyTank>(nullptr, position);
     }
     return nullptr;
 }

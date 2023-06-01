@@ -3,13 +3,13 @@
 #include "CBrickWall.h"
 #include "CConcreteWall.h"
 
-std::unique_ptr<IWall> CWallFactory::createWall(EWallsType type)
+std::shared_ptr<IWall> CWallFactory::createWall(EWallsType type, Point position)
 {
     switch (type) {
     case EWallsType::BRICK:
-        return std::make_unique<CBrickWall>();
+        return std::make_shared<CBrickWall>(nullptr, position);
     case EWallsType::CONCRETE:
-        return std::make_unique<CConcreteWall>();
+        return std::make_shared<CConcreteWall>(nullptr, position);
     default:
         return nullptr;
     }
