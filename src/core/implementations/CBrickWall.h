@@ -17,10 +17,10 @@ public:
 
     Q_INVOKABLE PointWrapper *position() const override;
     Q_INVOKABLE void draw() override;
-    Q_INVOKABLE bool isDestroyble() const override;
+    Q_INVOKABLE bool isDestroyable() const override;
 
 private:
     std::unique_ptr<PointWrapper> position_;
-    bool isDestroyble_;
+    bool isDestroyable_;
     bool isDrawn_;
 };

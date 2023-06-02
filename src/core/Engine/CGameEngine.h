@@ -5,28 +5,30 @@
 #include <QObject>
 #include <QTimer>
 
-#include "implementations/CEnemyTank.h"
 #include "interfaces/ITank.h"
 #include "interfaces/ITankFactory.h"
 #include "interfaces/IWallFactory.h"
 
-#include "implementations/CPlayerTank.h"
+#include "implementations/CTank.h"
 #include "managers/CLevelManager.h"
+#include "pod/MapRange.h"
 
 class CGameEngine : public QObject
 {
     Q_OBJECT
 public:
     explicit CGameEngine(QObject *parent = nullptr);
+    ~CGameEngine() override = default;
 
     void startGame();
     void endGame();
+    void initMap(int width, int height);
 
-    void load_ememy_tanks();
-    QList<CEnemyTank *> ememy_tanks() const;
+    void load_enemy_tanks();
+    QList<CTank *> enemy_tanks() const;
 
     void load_player_tank();
-    CPlayerTank *player_tank() const;
+    CTank *player_tank() const;
 
 private slots:
     void updateGame();
@@ -38,7 +40,8 @@ private:
     std::unique_ptr<CLevelManager> levelManager_{};
     std::unique_ptr<IWallFactory> wallFactory_{};
     std::unique_ptr<ITankFactory> tankFactory_{};
-    std::shared_ptr<CPlayerTank> playerTank_{};
-    std::vector<std::shared_ptr<CEnemyTank>> tanks_ememy_{};
+    std::shared_ptr<CTank> playerTank_{};
+    std::vector<std::shared_ptr<CTank>> tanks_enemy_{};
     std::vector<std::unique_ptr<IWall>> walls_{};
+    MapRangeOpt mapRange_ = std::nullopt;
 };

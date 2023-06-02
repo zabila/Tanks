@@ -124,6 +124,8 @@ public:
     Q_INVOKABLE int x() const { return point.x; }
     Q_INVOKABLE int y() const { return point.y; }
 
+    Point value() const { return point; }
+
     friend std::ostream &operator<<(std::ostream &os, const PointWrapper &point_wrapper)
     {
         os << "x: " << point_wrapper.x() << " y: " << point_wrapper.y();

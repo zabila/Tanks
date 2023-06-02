@@ -4,7 +4,7 @@
 CBrickWall::CBrickWall(QObject *parent, const Point &position) noexcept
     : QObject(parent)
     , position_(std::make_unique<PointWrapper>(position, parent))
-    , isDestroyble_(true)
+    , isDestroyable_(true)
     , isDrawn_(false)
 {}
 
@@ -17,13 +17,12 @@ void CBrickWall::draw()
     Log(INFO) << "Enemy tank is drawn " << position_.get();
 }
 
-bool CBrickWall::isDestroyble() const
+bool CBrickWall::isDestroyable() const
 {
-    return isDestroyble_;
+    return isDestroyable_;
 }
 
 PointWrapper *CBrickWall::position() const
 {
     return position_.get();
-    ;
 }

@@ -6,10 +6,6 @@ Rectangle {
     width: applicatin.width
     height: applicatin.height
 
-    Connections {
-        target: gameController
-    }
-
     Rectangle {
         id: menuPage
         width: parent.width
@@ -64,5 +60,9 @@ Rectangle {
                 }
             }
         }
+    }
+
+    Connections {
+        target: gameController
     }
 }

@@ -38,8 +38,22 @@ Item {
                     width: 30
                     height: 30
                     focus: true
-                    x: player.position.x
-                    y: player.position.y
+                    x: {
+                        if (player.position.x <= 0)
+                            return 0;
+                        else if (player.position.x > map.width)
+                            return map.width;
+                        else
+                            player.position.x
+                    }
+                    y: {
+                        if (player.position.y <= 0)
+                            return 0;
+                        else if (player.position.y > map.width)
+                            return map.width;
+                        else
+                            player.position.y
+                    }
                 }
             }
 
@@ -73,6 +87,10 @@ Item {
     property var tanks: enemyTanksController.ememyTanks
 
     Component.onCompleted: {
+        gameController.initMap(map.width, map.height)
+        player = playerTankController.playerTank
+        tanks = enemyTanksController.ememyTanks
+
         console.log("---------------");
         console.log(player);
         console.log(player.position);

@@ -37,10 +37,10 @@ void CControllerManager::initializeAll(QQmlApplicationEngine *engine)
 void CControllerManager::RegisterMetaTypes()
 {
     qRegisterMetaType<ITank *>("ITank");
-    qRegisterMetaType<CPlayerTank *>("CPlayerTank");
+    qRegisterMetaType<CTank *>("CTank");
     qRegisterMetaType<PointWrapper>("PointWrapper");
     qRegisterMetaType<EDirection>("EDirection");
-    qmlRegisterType<CPlayerTank>("CustomTypes", 1, 0, "CPlayerTank");
+    qmlRegisterType<CTank>("CustomTypes", 1, 0, "CTank");
     qmlRegisterUncreatableType<MyEnum>("MyEnums",
                                        1,
                                        0,

@@ -1,5 +1,6 @@
 #include "CPlayerTankController.h"
 
+#include <utility>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
@@ -7,7 +8,7 @@
 
 CPlayerTankController::CPlayerTankController(std::shared_ptr<CGameEngine> engine, QObject *parent)
     : QObject(parent)
-    , gameEngine(engine)
+    , gameEngine(std::move(engine))
 {}
 
 void CPlayerTankController::initialize(QQmlApplicationEngine *engine)
@@ -26,7 +27,7 @@ void CPlayerTankController::initialize(QQmlApplicationEngine *engine)
     context->setContextProperty("playerTankController", this);
 }
 
-CPlayerTank *CPlayerTankController::getPlayerTank()
+CTank *CPlayerTankController::getPlayerTank()
 {
     gameEngine->load_player_tank();
     return gameEngine->player_tank();

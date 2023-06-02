@@ -2,20 +2,21 @@
 
 #include <memory>
 
-#include "CEnemyTank.h"
-#include "CPlayerTank.h"
+#include "CTank.h"
 
-std::shared_ptr<ITank> CTankFactory::createTank(ETankType type, Point position)
+std::shared_ptr<ITank> CTankFactory::createTank(ETankType type, const Point &position, const MapRange &map_range)
 {
     switch (type) {
     case ETankType::PLAYER:
-        return std::make_shared<CPlayerTank>(nullptr, position);
+        return std::make_shared<CTank>(nullptr, position, map_range);
     case ETankType::LIGHT:
-        return std::make_shared<CEnemyTank>(nullptr, position);
+        return std::make_shared<CTank>(nullptr, position, map_range);
     case ETankType::MEDIUM:
-        return std::make_shared<CEnemyTank>(nullptr, position);
+        return std::make_shared<CTank>(nullptr, position, map_range);
     case ETankType::HEAVY:
-        return std::make_shared<CEnemyTank>(nullptr, position);
+        return std::make_shared<CTank>(nullptr, position, map_range);
+    default:
+        break;
     }
     return nullptr;
 }

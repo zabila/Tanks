@@ -3,8 +3,7 @@
 #include <QQmlContext>
 
 #include "Logger.h"
-#include "implementations/CEnemyTank.h"
-#include "implementations/CPlayerTank.h"
+#include "implementations/CTank.h"
 
 CGameController::CGameController(std::shared_ptr<CGameEngine> engine, QObject *parent)
     : QObject(parent)
@@ -25,7 +24,7 @@ void CGameController::initialize(QQmlApplicationEngine *engine)
     }
 
     qRegisterMetaType<ITank *>("ITank");
-    qRegisterMetaType<CPlayerTank *>("CPlayerTank");
+    qRegisterMetaType<CTank *>("CTank");
 
     context->setContextProperty("gameController", this);
 }
@@ -37,4 +36,8 @@ void CGameController::startGame()
 void CGameController::endGame()
 {
     gameEngine->endGame();
+}
+void CGameController::initMap(int width, int height)
+{
+    gameEngine->initMap(width, height);
 }

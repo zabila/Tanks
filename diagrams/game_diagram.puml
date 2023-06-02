@@ -48,10 +48,7 @@ class CBase {
   -position: Point
 }
 
-class CPlayerTank {
-}
-
-class CEnemyTank {
+class CTank {
 }
 
 class CBrickWall {
@@ -96,11 +93,7 @@ interface ITankFactory {
   +createTank(type: TankType): ITank
 }
 
-class CPlayerTankFactory implements ITankFactory {
-  +createTank(type: TankType): ITank
-}
-
-class CEnemyTankFactory implements ITankFactory {
+class CTankFactory implements ITankFactory {
   +createTank(type: TankType): ITank
 }
 
@@ -130,9 +123,6 @@ IBullet <|.. CBullet
 IWall <|.. CWall
 IBase <|.. CBase
 
-CTank <|-- CPlayerTank
-CTank <|-- CEnemyTank
-
 CWall <|-- CBrickWall
 CWall <|-- CConcreteWall
 
@@ -143,8 +133,7 @@ CGameEngine ..> CGameController : uses
 
 CGameController ..> CLevelController : uses
 
-ITankFactory <|.. CPlayerTankFactory
-ITankFactory <|.. CEnemyTankFactory
+ITankFactory <|.. CTankFactory
 
 IWallFactory <|.. CBrickWallFactory
 IWallFactory <|.. CConcreteWallFactory

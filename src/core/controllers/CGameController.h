@@ -6,8 +6,7 @@
 #include <QQmlApplicationEngine>
 
 #include "Engine/CGameEngine.h"
-#include "implementations/CEnemyTank.h"
-#include "implementations/CPlayerTank.h"
+#include "implementations/CTank.h"
 #include "interfaces/IController.h"
 #include "pod/Point.h"
 
@@ -23,6 +22,7 @@ public:
 
     Q_INVOKABLE void startGame();
     Q_INVOKABLE void endGame();
+    Q_INVOKABLE void initMap(int width, int height);
 
 private:
     std::shared_ptr<CGameEngine> gameEngine;

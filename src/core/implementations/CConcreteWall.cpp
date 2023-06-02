@@ -17,7 +17,7 @@ void CConcreteWall::draw()
     Log(INFO) << "Enemy tank is drawn " << position_.get();
 }
 
-bool CConcreteWall::isDestroyble() const
+bool CConcreteWall::isDestroyable() const
 {
     return isDestroyble_;
 }

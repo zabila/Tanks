@@ -7,5 +7,5 @@
 class CTankFactory final : public ITankFactory
 {
 public:
-    std::shared_ptr<ITank> createTank(ETankType type, Point position) override;
+    std::shared_ptr<ITank> createTank(ETankType type, const Point &position, const MapRange &map_range) override;
 };

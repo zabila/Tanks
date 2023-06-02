@@ -4,8 +4,7 @@
 #include <random>
 
 #include "Logger.h"
-#include "implementations/CEnemyTank.h"
-#include "implementations/CPlayerTank.h"
+#include "implementations/CTank.h"
 #include "implementations/CTankFactory.h"
 #include "implementations/CWallFactory.h"
 #include "interfaces/IWall.h"
@@ -46,7 +45,7 @@ void CGameEngine::endGame()
 }
 void CGameEngine::updateGame()
 {
-    for (auto &tank : tanks_ememy_) {
+    for (auto &tank : tanks_enemy_) {
         if (tank == nullptr) {
             Log(WARNING) << "Tank is nullptr";
             continue;
@@ -59,7 +58,7 @@ void CGameEngine::updateGame()
             Log(WARNING) << "Wall is nullptr";
             continue;
         }
-        if (wall->isDestroyble()) {
+        if (wall->isDestroyable()) {
             wall->draw();
         }
     }
@@ -67,29 +66,47 @@ void CGameEngine::updateGame()
 
 void CGameEngine::create_and_load_enemy_tank(CTankFactory::ETankType type)
 {
-    auto tank = tankFactory_->createTank(type, {getRandomNumber(1, 15), getRandomNumber(1, 15)});
+    if (!mapRange_.has_value()) {
+        Log(WARNING) << "Map range is empty";
+        return;
+    }
+
+    auto tank = tankFactory_->createTank(type, {getRandomNumber(1, 15), getRandomNumber(1, 15)}, mapRange_.value());
     if (tank == nullptr) {
         Log(WARNING) << "Tank is nullptr";
         return;
     }
-    tanks_ememy_.push_back(std::dynamic_pointer_cast<CEnemyTank>(tank));
+    tanks_enemy_.push_back(std::dynamic_pointer_cast<CTank>(tank));
 }
 
-void CGameEngine::load_ememy_tanks()
+void CGameEngine::load_enemy_tanks()
 {
+    tanks_enemy_.clear();
+
+    if (!mapRange_.has_value()) {
+        Log(WARNING) << "Map range is empty";
+        return;
+    }
+
     create_and_load_enemy_tank(CTankFactory::ETankType::LIGHT);
     create_and_load_enemy_tank(CTankFactory::ETankType::MEDIUM);
     create_and_load_enemy_tank(CTankFactory::ETankType::HEAVY);
 }
 
-QList<CEnemyTank *> CGameEngine::ememy_tanks() const
+QList<CTank *> CGameEngine::enemy_tanks() const
 {
-    if (tanks_ememy_.empty()) {
+    if (tanks_enemy_.empty()) {
         Log(WARNING) << "Tanks is empty";
+        return {};
     }
 
-    QList<CEnemyTank *> result;
-    for (auto &tank : tanks_ememy_) {
+    if (!mapRange_.has_value()) {
+        Log(WARNING) << "Map range is empty";
+        return {};
+    }
+
+    QList<CTank *> result;
+    for (auto &tank : tanks_enemy_) {
         if (tank == nullptr) {
             Log(WARNING) << "Tank is nullptr";
             continue;
@@ -101,20 +118,39 @@ QList<CEnemyTank *> CGameEngine::ememy_tanks() const
 
 void CGameEngine::load_player_tank()
 {
+    playerTank_.reset();
+
+    if (!mapRange_.has_value()) {
+        Log(WARNING) << "Map range is empty";
+        return;
+    }
+
     auto tank = tankFactory_->createTank(CTankFactory::ETankType::PLAYER,
-                                         {getRandomNumber(0, 30), getRandomNumber(0, 30)});
+                                         {getRandomNumber(0, 30), getRandomNumber(0, 30)},
+                                         mapRange_.value());
     if (tank == nullptr) {
         Log(WARNING) << "Tank is nullptr";
         return;
     }
-    playerTank_ = std::dynamic_pointer_cast<CPlayerTank>(tank);
+    playerTank_ = std::dynamic_pointer_cast<CTank>(tank);
 }
 
-CPlayerTank *CGameEngine::player_tank() const
+CTank *CGameEngine::player_tank() const
 {
+    if (!mapRange_.has_value()) {
+        Log(WARNING) << "Map range is empty";
+        return nullptr;
+    }
+
     if (playerTank_ == nullptr) {
         Log(WARNING) << "Player tank is nullptr";
         return nullptr;
     }
     return playerTank_.get();
+}
+
+void CGameEngine::initMap(int width, int height)
+{
+    Log(INFO) << "Init map width: " << width << " height: " << height;
+    mapRange_ = {width, height};
 }
