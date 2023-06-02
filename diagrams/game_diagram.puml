@@ -60,7 +60,7 @@ class CBrickWall {
 class CConcreteWall {
 }
 
-class CGameManager {
+class CGameEngine {
   -currentLevel: int
   -playerTank: ITank
   -enemyTanks: list<ITank>
@@ -78,7 +78,7 @@ class CLevelManager {
 }
 
 class CGameController {
-  -gameManager: CGameManager
+  -gameManager: CGameEngine
   -levelManager: CLevelManager
   +startGame(): void
   +endGame(): void
@@ -136,10 +136,10 @@ CTank <|-- CEnemyTank
 CWall <|-- CBrickWall
 CWall <|-- CConcreteWall
 
-CGameManager ..> ITankFactory : uses
-CGameManager ..> IWallFactory : uses
-CGameManager ..> CLevelManager : uses
-CGameManager ..> CGameController : uses
+CGameEngine ..> ITankFactory : uses
+CGameEngine ..> IWallFactory : uses
+CGameEngine ..> CLevelManager : uses
+CGameEngine ..> CGameController : uses
 
 CGameController ..> CLevelController : uses
 

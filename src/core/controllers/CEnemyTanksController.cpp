@@ -5,9 +5,9 @@
 
 #include "Logger.h"
 
-CEnemyTanksController::CEnemyTanksController(std::shared_ptr<CGameManager> gameManager, QObject *parent)
+CEnemyTanksController::CEnemyTanksController(std::shared_ptr<CGameEngine> engine, QObject *parent)
     : QObject(parent)
-    , gameManager_(gameManager)
+    , gameEngine(engine)
 {}
 
 void CEnemyTanksController::initialize(QQmlApplicationEngine *engine)
@@ -27,6 +27,6 @@ void CEnemyTanksController::initialize(QQmlApplicationEngine *engine)
 }
 QList<CEnemyTank *> CEnemyTanksController::getEmemyTanks()
 {
-    gameManager_->load_ememy_tanks();
-    return gameManager_->ememy_tanks();
+    gameEngine->load_ememy_tanks();
+    return gameEngine->ememy_tanks();
 }

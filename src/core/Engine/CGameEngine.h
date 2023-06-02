@@ -10,14 +10,14 @@
 #include "interfaces/ITankFactory.h"
 #include "interfaces/IWallFactory.h"
 
-#include "CLevelManager.h"
 #include "implementations/CPlayerTank.h"
+#include "managers/CLevelManager.h"
 
-class CGameManager : public QObject
+class CGameEngine : public QObject
 {
     Q_OBJECT
 public:
-    explicit CGameManager(QObject *parent = nullptr);
+    explicit CGameEngine(QObject *parent = nullptr);
 
     void startGame();
     void endGame();

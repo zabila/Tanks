@@ -6,9 +6,9 @@
 #include "implementations/CEnemyTank.h"
 #include "implementations/CPlayerTank.h"
 
-CGameController::CGameController(std::shared_ptr<CGameManager> gameManager, QObject *parent)
+CGameController::CGameController(std::shared_ptr<CGameEngine> engine, QObject *parent)
     : QObject(parent)
-    , gameManager_(gameManager)
+    , gameEngine(engine)
 {}
 
 void CGameController::initialize(QQmlApplicationEngine *engine)
@@ -32,9 +32,9 @@ void CGameController::initialize(QQmlApplicationEngine *engine)
 
 void CGameController::startGame()
 {
-    gameManager_->startGame();
+    gameEngine->startGame();
 }
 void CGameController::endGame()
 {
-    gameManager_->endGame();
+    gameEngine->endGame();
 }

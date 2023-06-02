@@ -1,5 +1,5 @@
 #include "CControllerManager.h"
-#include "CGameManager.h"
+#include "Engine/CGameEngine.h"
 #include "controllers/CEnemyTanksController.h"
 #include "controllers/CGameController.h"
 #include "controllers/CPlayerTankController.h"
@@ -15,15 +15,15 @@ CControllerManager::CControllerManager()
 
 void CControllerManager::init()
 {
-    gameManager_ = std::make_shared<CGameManager>();
+    gameEngine = std::make_shared<CGameEngine>();
 
-    auto gameController = std::make_unique<CGameController>(gameManager_);
+    auto gameController = std::make_unique<CGameController>(gameEngine);
     controllers_.push_back(std::move(gameController));
 
-    auto playerTankController = std::make_unique<CPlayerTankController>(gameManager_);
+    auto playerTankController = std::make_unique<CPlayerTankController>(gameEngine);
     controllers_.push_back(std::move(playerTankController));
 
-    auto enemyTanksController = std::make_unique<CEnemyTanksController>(gameManager_);
+    auto enemyTanksController = std::make_unique<CEnemyTanksController>(gameEngine);
     controllers_.push_back(std::move(enemyTanksController));
 }
 

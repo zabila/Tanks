@@ -1,4 +1,4 @@
-#include "CGameManager.h"
+#include "CGameEngine.h"
 
 #include <memory>
 #include <random>
@@ -21,22 +21,22 @@ int getRandomNumber(int min, int max)
 }
 } // namespace
 
-CGameManager::CGameManager(QObject *parent)
+CGameEngine::CGameEngine(QObject *parent)
     : QObject(parent)
     , levelManager_(nullptr)
     , wallFactory_(std::make_unique<CWallFactory>())
     , tankFactory_(std::make_unique<CTankFactory>())
 {}
 
-void CGameManager::startGame()
+void CGameEngine::startGame()
 {
     Log(INFO) << "Start game";
     gameTimer_ = std::make_unique<QTimer>();
-    connect(gameTimer_.get(), &QTimer::timeout, this, &CGameManager::updateGame);
+    connect(gameTimer_.get(), &QTimer::timeout, this, &CGameEngine::updateGame);
     gameTimer_->start(1000 / 60);
 }
 
-void CGameManager::endGame()
+void CGameEngine::endGame()
 {
     Log(INFO) << "End game";
     if (gameTimer_) {
@@ -44,7 +44,7 @@ void CGameManager::endGame()
         gameTimer_.reset();
     }
 }
-void CGameManager::updateGame()
+void CGameEngine::updateGame()
 {
     for (auto &tank : tanks_ememy_) {
         if (tank == nullptr) {
@@ -65,7 +65,7 @@ void CGameManager::updateGame()
     }
 }
 
-void CGameManager::create_and_load_enemy_tank(CTankFactory::ETankType type)
+void CGameEngine::create_and_load_enemy_tank(CTankFactory::ETankType type)
 {
     auto tank = tankFactory_->createTank(type, {getRandomNumber(1, 15), getRandomNumber(1, 15)});
     if (tank == nullptr) {
@@ -75,14 +75,14 @@ void CGameManager::create_and_load_enemy_tank(CTankFactory::ETankType type)
     tanks_ememy_.push_back(std::dynamic_pointer_cast<CEnemyTank>(tank));
 }
 
-void CGameManager::load_ememy_tanks()
+void CGameEngine::load_ememy_tanks()
 {
     create_and_load_enemy_tank(CTankFactory::ETankType::LIGHT);
     create_and_load_enemy_tank(CTankFactory::ETankType::MEDIUM);
     create_and_load_enemy_tank(CTankFactory::ETankType::HEAVY);
 }
 
-QList<CEnemyTank *> CGameManager::ememy_tanks() const
+QList<CEnemyTank *> CGameEngine::ememy_tanks() const
 {
     if (tanks_ememy_.empty()) {
         Log(WARNING) << "Tanks is empty";
@@ -99,7 +99,7 @@ QList<CEnemyTank *> CGameManager::ememy_tanks() const
     return result;
 }
 
-void CGameManager::load_player_tank()
+void CGameEngine::load_player_tank()
 {
     auto tank = tankFactory_->createTank(CTankFactory::ETankType::PLAYER,
                                          {getRandomNumber(0, 30), getRandomNumber(0, 30)});
@@ -110,7 +110,7 @@ void CGameManager::load_player_tank()
     playerTank_ = std::dynamic_pointer_cast<CPlayerTank>(tank);
 }
 
-CPlayerTank *CGameManager::player_tank() const
+CPlayerTank *CGameEngine::player_tank() const
 {
     if (playerTank_ == nullptr) {
         Log(WARNING) << "Player tank is nullptr";

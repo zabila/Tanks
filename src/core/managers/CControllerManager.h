@@ -2,7 +2,7 @@
 
 #include <QQmlApplicationEngine>
 
-#include "CGameManager.h"
+#include "Engine/CGameEngine.h"
 #include "interfaces/IController.h"
 
 #include <memory>
@@ -20,6 +20,6 @@ public:
 private:
     void init();
 
-    std::shared_ptr<CGameManager> gameManager_;
+    std::shared_ptr<CGameEngine> gameEngine;
     std::vector<std::unique_ptr<IController>> controllers_;
 };

@@ -5,9 +5,9 @@
 
 #include "Logger.h"
 
-CPlayerTankController::CPlayerTankController(std::shared_ptr<CGameManager> gameManager, QObject *parent)
+CPlayerTankController::CPlayerTankController(std::shared_ptr<CGameEngine> engine, QObject *parent)
     : QObject(parent)
-    , gameManager_(gameManager)
+    , gameEngine(engine)
 {}
 
 void CPlayerTankController::initialize(QQmlApplicationEngine *engine)
@@ -28,6 +28,6 @@ void CPlayerTankController::initialize(QQmlApplicationEngine *engine)
 
 CPlayerTank *CPlayerTankController::getPlayerTank()
 {
-    gameManager_->load_player_tank();
-    return gameManager_->player_tank();
+    gameEngine->load_player_tank();
+    return gameEngine->player_tank();
 }
