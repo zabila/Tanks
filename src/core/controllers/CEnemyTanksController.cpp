@@ -25,7 +25,7 @@ void CEnemyTanksController::initialize(QQmlApplicationEngine *engine)
 
     context->setContextProperty("enemyTanksController", this);
 }
-QList<CEmemyTank *> CEnemyTanksController::getEmemyTanks()
+QList<CEnemyTank *> CEnemyTanksController::getEmemyTanks()
 {
     gameManager_->load_ememy_tanks();
     return gameManager_->ememy_tanks();

@@ -3,14 +3,14 @@
 
 #include "interfaces/IMovable.h"
 
-CEmemyTank::CEmemyTank(QObject *parent, const Point &position) noexcept
+CEnemyTank::CEnemyTank(QObject *parent, const Point &position) noexcept
     : QObject(parent)
     , position_(std::make_unique<PointWrapper>(position, parent))
     , speed_(1)
     , isDrawn_(false)
 {}
 
-void CEmemyTank::draw()
+void CEnemyTank::draw()
 {
     if (isDrawn_)
         return;
@@ -18,7 +18,7 @@ void CEmemyTank::draw()
     isDrawn_ = true;
     Log(INFO) << "Enemy tank is drawn " << position_.get();
 }
-void CEmemyTank::move(MyEnum::Direction direction)
+void CEnemyTank::move(MyEnum::Direction direction)
 {
     Log(INFO) << "Player tank is moved to " << toString(direction);
     switch (direction) {
@@ -38,16 +38,16 @@ void CEmemyTank::move(MyEnum::Direction direction)
     isDrawn_ = false;
     draw();
 }
-PointWrapper *CEmemyTank::position() const
+PointWrapper *CEnemyTank::position() const
 {
     return position_.get();
 }
-int CEmemyTank::speed() const
+int CEnemyTank::speed() const
 {
     return speed_;
 }
 
-void CEmemyTank::shoot()
+void CEnemyTank::shoot()
 {
-    Log(INFO) << "Enemy tank is shooted";
+    Log(INFO) << "Enemy tank is shoot";
 }
