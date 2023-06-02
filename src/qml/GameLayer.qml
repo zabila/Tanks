@@ -38,22 +38,24 @@ Item {
                     width: 30
                     height: 30
                     focus: true
-                    x: {
-                        if (player.position.x <= 0)
-                            return 0;
-                        else if (player.position.x > map.width)
-                            return map.width;
-                        else
-                            player.position.x
+                    x: player.position.x
+                    y: player.position.y
+                }
+
+                Repeater
+                {
+                    model: tanks
+
+                    Rectangle
+                    {
+                        color: "yellow"
+                        width: 30
+                        height: 30
+                        focus: true
+                        x: modelData.position.x
+                        y: modelData.position.y
                     }
-                    y: {
-                        if (player.position.y <= 0)
-                            return 0;
-                        else if (player.position.y > map.width)
-                            return map.width;
-                        else
-                            player.position.y
-                    }
+
                 }
             }
 

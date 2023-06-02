@@ -10,13 +10,12 @@
 #include "interfaces/IWall.h"
 
 namespace {
+
+static std::mt19937 engine(std::random_device{}());
 int getRandomNumber(int min, int max)
 {
-    std::random_device rd;                            // Obtain a random number from hardware
-    std::mt19937 gen(rd());                           // Seed the random number engine
-    std::uniform_int_distribution<int> dis(min, max); // Define the distribution
-
-    return dis(gen);                                  // Generate and return a random number within the specified range
+    std::uniform_int_distribution<int> distribution(min, max);
+    return distribution(engine);
 }
 } // namespace
 
@@ -71,7 +70,9 @@ void CGameEngine::create_and_load_enemy_tank(CTankFactory::ETankType type)
         return;
     }
 
-    auto tank = tankFactory_->createTank(type, {getRandomNumber(1, 15), getRandomNumber(1, 15)}, mapRange_.value());
+    auto tank = tankFactory_->createTank(type,
+                                         {getRandomNumber(0, mapRange_->height), getRandomNumber(0, mapRange_->height)},
+                                         mapRange_.value());
     if (tank == nullptr) {
         Log(WARNING) << "Tank is nullptr";
         return;
