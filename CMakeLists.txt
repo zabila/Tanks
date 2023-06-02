@@ -16,11 +16,13 @@ find_package(Qt5 COMPONENTS Core Quick Qml REQUIRED)
 
 file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "src/core/*.cpp")
 file(GLOB_RECURSE PROJECT_HEADERS CONFIGURE_DEPENDS "src/core/*.h")
+file(GLOB_RECURSE QML_FILES "src/*.qml")
 include_directories(src/core)
 
-qt5_add_resources(QRC_SOURCES qml.qrc)
 
-add_executable(${PROJECT_NAME} ${PROJECT_HEADERS} ${PROJECT_SOURCES} ${QRC_SOURCES} src/core/Logger.h src/main.cpp)
+qt5_add_resources(QRC_SOURCES "src/qml.qrc")
+
+add_executable(${PROJECT_NAME} ${PROJECT_HEADERS} ${PROJECT_SOURCES} ${QRC_SOURCES} ${QML_FILES} src/core/Logger.h src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Quick Qt5::Qml -lpthread)
 

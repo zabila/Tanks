@@ -9,18 +9,12 @@ int main(int argc, char *argv[])
     g_logger = new LoggerImpl("log.txt");
 
     QGuiApplication app(argc, argv);
-
-    qRegisterMetaType<PointWrapper>("PointWrapper");
-    qmlRegisterType<CPlayerTank>("CustomTypes", 1, 0, "CPlayerTank");
-
-    qRegisterMetaType<EDirection>("EDirection");
-    qmlRegisterUncreatableType<MyEnum>("MyEnums", 1, 0, "EDirection", QStringLiteral("Cannot create objects of type MyEnum"));
-
-
     QQmlApplicationEngine engine;
     CControllerManager controllerManager;
+    controllerManager.RegisterMetaTypes();
     controllerManager.initializeAll(&engine);
-    engine.load(QUrl(QStringLiteral("qrc:src/qml/main.qml")));
+    engine.addImportPath(":/");
+    engine.load(QUrl(QStringLiteral("qrc:main.qml")));
 
     if (engine.rootObjects().isEmpty())
         return -1;

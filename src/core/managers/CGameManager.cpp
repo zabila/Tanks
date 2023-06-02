@@ -17,7 +17,7 @@ int getRandomNumber(int min, int max)
     std::mt19937 gen(rd());                           // Seed the random number engine
     std::uniform_int_distribution<int> dis(min, max); // Define the distribution
 
-    return dis(gen); // Generate and return a random number within the specified range
+    return dis(gen);                                  // Generate and return a random number within the specified range
 }
 } // namespace
 
@@ -30,6 +30,7 @@ CGameManager::CGameManager(QObject *parent)
 
 void CGameManager::startGame()
 {
+    Log(INFO) << "Start game";
     gameTimer_ = std::make_unique<QTimer>();
     connect(gameTimer_.get(), &QTimer::timeout, this, &CGameManager::updateGame);
     gameTimer_->start(1000 / 60);
@@ -37,6 +38,7 @@ void CGameManager::startGame()
 
 void CGameManager::endGame()
 {
+    Log(INFO) << "End game";
     if (gameTimer_) {
         gameTimer_->stop();
         gameTimer_.reset();
@@ -65,7 +67,7 @@ void CGameManager::updateGame()
 
 void CGameManager::create_and_load_enemy_tank(CTankFactory::ETankType type)
 {
-    auto tank = tankFactory_->createTank(type, {getRandomNumber(0, 30), getRandomNumber(0, 30)});
+    auto tank = tankFactory_->createTank(type, {getRandomNumber(1, 15), getRandomNumber(1, 15)});
     if (tank == nullptr) {
         Log(WARNING) << "Tank is nullptr";
         return;
@@ -97,4 +99,22 @@ QList<CEmemyTank *> CGameManager::ememy_tanks() const
     return result;
 }
 
-void CGameManager::load_walls() {}
+void CGameManager::load_player_tank()
+{
+    auto tank = tankFactory_->createTank(CTankFactory::ETankType::PLAYER,
+                                         {getRandomNumber(0, 30), getRandomNumber(0, 30)});
+    if (tank == nullptr) {
+        Log(WARNING) << "Tank is nullptr";
+        return;
+    }
+    playerTank_ = std::dynamic_pointer_cast<CPlayerTank>(tank);
+}
+
+CPlayerTank *CGameManager::player_tank() const
+{
+    if (playerTank_ == nullptr) {
+        Log(WARNING) << "Player tank is nullptr";
+        return nullptr;
+    }
+    return playerTank_.get();
+}

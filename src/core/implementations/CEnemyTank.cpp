@@ -23,19 +23,20 @@ void CEmemyTank::move(MyEnum::Direction direction)
     Log(INFO) << "Player tank is moved to " << toString(direction);
     switch (direction) {
     case MyEnum::Direction::UP:
-        position_->setX(position_->x() + speed_);
+        position_->setY(position_->y() + speed_);
         break;
     case MyEnum::Direction::DOWN:
-        position_->setY(position_->x() - speed_);
-        break;
-    case MyEnum::Direction::LEFT:
         position_->setY(position_->y() - speed_);
         break;
+    case MyEnum::Direction::LEFT:
+        position_->setX(position_->x() - speed_);
+        break;
     case MyEnum::Direction::RIGHT:
-        position_->setY(position_->y() + speed_);
+        position_->setX(position_->x() + speed_);
         break;
     }
     isDrawn_ = false;
+    draw();
 }
 PointWrapper *CEmemyTank::position() const
 {

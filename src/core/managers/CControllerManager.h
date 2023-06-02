@@ -2,15 +2,24 @@
 
 #include <QQmlApplicationEngine>
 
-#include "controllers/CGameController.h"
+#include "CGameManager.h"
+#include "interfaces/IController.h"
+
+#include <memory>
+#include <vector>
 
 class CControllerManager
 {
 public:
     explicit CControllerManager();
+    ~CControllerManager() = default;
 
     void initializeAll(QQmlApplicationEngine *engine);
+    void RegisterMetaTypes();
 
 private:
-    CGameController gameController;
+    void init();
+
+    std::shared_ptr<CGameManager> gameManager_;
+    std::vector<std::unique_ptr<IController>> controllers_;
 };

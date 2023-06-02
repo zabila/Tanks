@@ -4,11 +4,10 @@
 CPlayerTank::CPlayerTank(QObject *parent, const Point &position) noexcept
     : QObject(parent)
     , position_(std::make_unique<PointWrapper>(position, parent))
-    , speed_(1)
+    , speed_(10)
     , isDrawn_(false)
 {
-    Log(INFO) << "Player tank is created " << position_.get() << " speed: " << speed_
-              << " isDrawn: " << isDrawn_;
+    Log(INFO) << "Player tank is created " << position_.get() << " speed: " << speed_ << " isDrawn: " << isDrawn_;
 }
 
 void CPlayerTank::draw()
@@ -25,19 +24,21 @@ void CPlayerTank::move(MyEnum::Direction direction)
     Log(INFO) << "Player tank is moved to " << toString(direction);
     switch (direction) {
     case MyEnum::Direction::UP:
-        position_->setX(position_->x() + speed_);
-        break;
-    case MyEnum::Direction::DOWN:
-        position_->setY(position_->x() - speed_);
-        break;
-    case MyEnum::Direction::LEFT:
         position_->setY(position_->y() - speed_);
         break;
-    case MyEnum::Direction::RIGHT:
+    case MyEnum::Direction::DOWN:
         position_->setY(position_->y() + speed_);
+        break;
+    case MyEnum::Direction::LEFT:
+        position_->setX(position_->x() - speed_);
+        break;
+    case MyEnum::Direction::RIGHT:
+        position_->setX(position_->x() + speed_);
         break;
     }
     isDrawn_ = false;
+    draw();
+    emit positionChanged();
 }
 
 void CPlayerTank::shoot()
