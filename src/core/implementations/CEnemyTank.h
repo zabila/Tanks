@@ -8,15 +8,15 @@
 #include "pod/Enums.h"
 #include "pod/Point.h"
 
-class CEmemyTank final : public QObject, public ITank
+class CEnemyTank final : public QObject, public ITank
 {
     Q_OBJECT
     Q_INTERFACES(ITank IDrawable IMovable)
     Q_PROPERTY(PointWrapper *position READ position NOTIFY positionChanged)
     Q_PROPERTY(int speed READ speed CONSTANT)
 public:
-    explicit CEmemyTank(QObject *parent = nullptr, const Point &position = {}) noexcept;
-    ~CEmemyTank() override = default;
+    explicit CEnemyTank(QObject *parent = nullptr, const Point &position = {}) noexcept;
+    ~CEnemyTank() override = default;
 
     PointWrapper *position() const override;
     int speed() const override;

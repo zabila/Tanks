@@ -23,7 +23,7 @@ public:
     void endGame();
 
     void load_ememy_tanks();
-    QList<CEmemyTank *> ememy_tanks() const;
+    QList<CEnemyTank *> ememy_tanks() const;
 
     void load_player_tank();
     CPlayerTank *player_tank() const;
@@ -39,6 +39,6 @@ private:
     std::unique_ptr<IWallFactory> wallFactory_{};
     std::unique_ptr<ITankFactory> tankFactory_{};
     std::shared_ptr<CPlayerTank> playerTank_{};
-    std::vector<std::shared_ptr<CEmemyTank>> tanks_ememy_{};
+    std::vector<std::shared_ptr<CEnemyTank>> tanks_ememy_{};
     std::vector<std::unique_ptr<IWall>> walls_{};
 };

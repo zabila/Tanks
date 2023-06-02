@@ -72,7 +72,7 @@ void CGameManager::create_and_load_enemy_tank(CTankFactory::ETankType type)
         Log(WARNING) << "Tank is nullptr";
         return;
     }
-    tanks_ememy_.push_back(std::dynamic_pointer_cast<CEmemyTank>(tank));
+    tanks_ememy_.push_back(std::dynamic_pointer_cast<CEnemyTank>(tank));
 }
 
 void CGameManager::load_ememy_tanks()
@@ -82,13 +82,13 @@ void CGameManager::load_ememy_tanks()
     create_and_load_enemy_tank(CTankFactory::ETankType::HEAVY);
 }
 
-QList<CEmemyTank *> CGameManager::ememy_tanks() const
+QList<CEnemyTank *> CGameManager::ememy_tanks() const
 {
     if (tanks_ememy_.empty()) {
         Log(WARNING) << "Tanks is empty";
     }
 
-    QList<CEmemyTank *> result;
+    QList<CEnemyTank *> result;
     for (auto &tank : tanks_ememy_) {
         if (tank == nullptr) {
             Log(WARNING) << "Tank is nullptr";
