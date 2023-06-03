@@ -1,15 +1,15 @@
 #include "CWallFactory.h"
 
-#include "CBrickWall.h"
-#include "CConcreteWall.h"
+#include "CWall.h"
+#include "pod/MapRange.h"
 
-std::shared_ptr<IWall> CWallFactory::createWall(EWallsType type, Point position)
+std::shared_ptr<IWall> CWallFactory::createWall(EWallsType type, const Point &position, const MapRange &map_range)
 {
     switch (type) {
     case EWallsType::BRICK:
-        return std::make_shared<CBrickWall>(nullptr, position);
+        return std::make_shared<CWall>(nullptr, position, map_range);
     case EWallsType::CONCRETE:
-        return std::make_shared<CConcreteWall>(nullptr, position);
+        return std::make_shared<CWall>(nullptr, position, map_range);
     default:
         return nullptr;
     }

@@ -10,6 +10,7 @@
 #include "interfaces/IWallFactory.h"
 
 #include "implementations/CTank.h"
+#include "implementations/CWall.h"
 #include "managers/CLevelManager.h"
 #include "pod/MapRange.h"
 
@@ -30,11 +31,15 @@ public:
     void load_player_tank();
     CTank *player_tank() const;
 
+    void load_walls();
+    QList<CWall *> walls() const;
+
 private slots:
     void updateGame();
 
 private:
     void create_and_load_enemy_tank(ITankFactory::ETankType type);
+    void checkingCollisions();
 
     std::unique_ptr<QTimer> gameTimer_{};
     std::unique_ptr<CLevelManager> levelManager_{};
@@ -42,6 +47,6 @@ private:
     std::unique_ptr<ITankFactory> tankFactory_{};
     std::shared_ptr<CTank> playerTank_{};
     std::vector<std::shared_ptr<CTank>> tanks_enemy_{};
-    std::vector<std::unique_ptr<IWall>> walls_{};
+    std::vector<std::shared_ptr<CWall>> walls_{};
     MapRangeOpt mapRange_ = std::nullopt;
 };

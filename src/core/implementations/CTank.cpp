@@ -1,15 +1,14 @@
 #include "CTank.h"
 #include "Logger.h"
+#include "pod/Point.h"
 
 CTank::CTank(QObject *parent, const Point &position, const MapRange &map_range) noexcept
     : QObject(parent)
     , position_(std::make_unique<PointWrapper>(position, parent))
     , map_range_(map_range)
-    , speed_(10)
+    , speed_(5)
     , isDrawn_(false)
-{
-    Log(INFO) << "Player tank is created " << position_.get() << " speed: " << speed_ << " isDrawn: " << isDrawn_;
-}
+{}
 
 void CTank::draw()
 {
@@ -17,13 +16,11 @@ void CTank::draw()
         return;
 
     isDrawn_ = true;
-    Log(INFO) << "Player tank is drawn " << position_.get();
+    Log(INFO) << "Tank is drawn " << position_.get();
 }
 
 void CTank::move(MyEnum::Direction direction)
 {
-    Log(INFO) << "Player tank is moved to " << position_.get() << " speed: " << speed_ << " isDrawn: " << isDrawn_
-              << "map_range: " << map_range_;
     if (!map_range_.contains(position_->value())) {
         Log(WARNING) << "Tank is out of map range";
         return;
@@ -58,7 +55,7 @@ void CTank::move(MyEnum::Direction direction)
 
 void CTank::shoot()
 {
-    Log(INFO) << "Player tank is shooted";
+    Log(INFO) << "Player tank is shoot";
 }
 
 PointWrapper *CTank::position() const
@@ -69,4 +66,14 @@ PointWrapper *CTank::position() const
 int CTank::speed() const
 {
     return speed_;
+}
+
+bool CTank::isCollide(IDrawable *drawn_object) const
+{
+    Point topLeft = position_->value();
+    Point drawn_point = drawn_object->position()->value();
+    int length = 30;
+
+    return topLeft.x < drawn_point.x + length && drawn_point.x < topLeft.x + length
+           && topLeft.y < drawn_point.y + length && drawn_point.y < topLeft.y + length;
 }

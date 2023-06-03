@@ -16,6 +16,8 @@ public:
         os << "x: " << point.x << " y: " << point.y;
         return os;
     }
+
+    bool operator==(const Point &other) const { return x == other.x && y == other.y; }
 };
 
 class PointWrapper : public QObject

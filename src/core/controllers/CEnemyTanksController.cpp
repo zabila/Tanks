@@ -13,20 +13,14 @@ CEnemyTanksController::CEnemyTanksController(std::shared_ptr<CGameEngine> engine
 
 void CEnemyTanksController::initialize(QQmlApplicationEngine *engine)
 {
-    if (!engine) {
-        Log(FATAL) << "Engine is nullptr";
-        return;
-    }
+    LogIfNullReturn(gameEngine, "Game engine is nullptr");
 
     auto context = engine->rootContext();
-    if (!context) {
-        Log(FATAL) << "Context is nullptr";
-        return;
-    }
+    LogIfNullReturn(context, "Context is nullptr");
 
     context->setContextProperty("enemyTanksController", this);
 }
-QList<CTank *> CEnemyTanksController::getEmemyTanks()
+QList<CTank *> CEnemyTanksController::getEnemyTanks()
 {
     gameEngine->load_enemy_tanks();
     return gameEngine->enemy_tanks();

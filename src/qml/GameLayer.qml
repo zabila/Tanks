@@ -30,10 +30,12 @@ Item {
                 id: map
                 height: 500
                 width: height
-                color: "blue"
+                border.width: 2
+                border.color: "blue"
 
                 Rectangle
                 {
+                    id: playertTank
                     color: "black"
                     width: 30
                     height: 30
@@ -49,6 +51,22 @@ Item {
                     Rectangle
                     {
                         color: "yellow"
+                        width: 30
+                        height: 30
+                        focus: true
+                        x: modelData.position.x
+                        y: modelData.position.y
+                    }
+
+                }
+
+                Repeater
+                {
+                    model: walls
+
+                    Rectangle
+                    {
+                        color: "green"
                         width: 30
                         height: 30
                         focus: true
@@ -85,37 +103,18 @@ Item {
         target: enemyTanksController
     }
 
-    property var player: playerTankController.playerTank
-    property var tanks: enemyTanksController.ememyTanks
+    Connections {
+        target: wallController
+    }
+
+    property var player;
+    property var tanks;
+    property var walls;
 
     Component.onCompleted: {
         gameController.initMap(map.width, map.height)
         player = playerTankController.playerTank
-        tanks = enemyTanksController.ememyTanks
-
-        console.log("---------------");
-        console.log(player);
-        console.log(player.position);
-        console.log(player.position.x);
-        console.log(player.position.y);
-        console.log(player.speed);
-        player.draw();
-        player.move(EDirection.UP);
-        player.shoot();
-        console.log("---------------");
-
-        for (var i = 0; i < tanks.length; i++) {
-            var tank = tanks[i];
-            console.log("---------------");
-            console.log(tank);
-            console.log(tank.position);
-            console.log(tank.position.x);
-            console.log(tank.position.y);
-            console.log(tank.speed);
-            tank.draw();
-            tank.move(EDirection.UP);
-            tank.shoot();
-            console.log("---------------");
-        }
+        tanks = enemyTanksController.enemyTanks
+        walls = wallController.walls
     }
 }

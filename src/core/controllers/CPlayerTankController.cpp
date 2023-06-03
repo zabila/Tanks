@@ -13,16 +13,10 @@ CPlayerTankController::CPlayerTankController(std::shared_ptr<CGameEngine> engine
 
 void CPlayerTankController::initialize(QQmlApplicationEngine *engine)
 {
-    if (!engine) {
-        Log(FATAL) << "Engine is nullptr";
-        return;
-    }
+    LogIfNullReturn(engine, "Game engine is nullptr");
 
     auto context = engine->rootContext();
-    if (!context) {
-        Log(FATAL) << "Context is nullptr";
-        return;
-    }
+    LogIfNullReturn(context, "Context is nullptr");
 
     context->setContextProperty("playerTankController", this);
 }

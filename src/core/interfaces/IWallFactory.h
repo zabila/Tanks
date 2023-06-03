@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "IWall.h"
+#include "pod/MapRange.h"
 
 class IWallFactory
 {
@@ -12,5 +13,5 @@ public:
         CONCRETE,
     };
 
-    virtual std::shared_ptr<IWall> createWall(EWallsType type, Point position) = 0;
+    virtual std::shared_ptr<IWall> createWall(EWallsType type, const Point &position, const MapRange &map_range) = 0;
 };

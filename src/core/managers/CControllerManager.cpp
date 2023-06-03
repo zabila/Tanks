@@ -3,6 +3,7 @@
 #include "controllers/CEnemyTanksController.h"
 #include "controllers/CGameController.h"
 #include "controllers/CPlayerTankController.h"
+#include "controllers/CWallController.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -25,6 +26,9 @@ void CControllerManager::init()
 
     auto enemyTanksController = std::make_unique<CEnemyTanksController>(gameEngine);
     controllers_.push_back(std::move(enemyTanksController));
+
+    auto wallController = std::make_unique<CWallController>(gameEngine);
+    controllers_.push_back(std::move(wallController));
 }
 
 void CControllerManager::initializeAll(QQmlApplicationEngine *engine)

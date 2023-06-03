@@ -11,14 +11,14 @@
 class CEnemyTanksController : public QObject, public IController
 {
     Q_OBJECT
-    Q_PROPERTY(QList<CTank *> ememyTanks READ getEmemyTanks CONSTANT)
+    Q_PROPERTY(QList<CTank *> enemyTanks READ getEnemyTanks CONSTANT)
 public:
     explicit CEnemyTanksController(std::shared_ptr<CGameEngine> engine, QObject *parent = nullptr);
     ~CEnemyTanksController() override = default;
 
     void initialize(QQmlApplicationEngine *engine) override;
 
-    QList<CTank *> getEmemyTanks();
+    QList<CTank *> getEnemyTanks();
 
 private:
     std::shared_ptr<CGameEngine> gameEngine;
