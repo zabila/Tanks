@@ -1,10 +1,11 @@
 #include "CWall.h"
 #include "Logger.h"
 
-CWall::CWall(QObject *parent, const Point &position, const MapRange &map_range) noexcept
-    : QObject(parent)
-    , position_(std::make_unique<PointWrapper>(position, parent))
-    , map_range_(map_range)
+CWall::CWall(CGameEngine* gameEngine, const Point& position)
+    : QObject(nullptr)
+    , id_(getId())
+    , gameEngine_(gameEngine)
+    , position_(std::make_unique<PointWrapper>(position, this))
     , isDestroyable_(true)
     , isDrawn_(false)
 {}
@@ -23,7 +24,11 @@ bool CWall::isDestroyable() const
     return isDestroyable_;
 }
 
-PointWrapper *CWall::position() const
+PointWrapper* CWall::position() const
 {
     return position_.get();
+}
+int CWall::id() const
+{
+    return id_;
 }

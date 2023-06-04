@@ -22,6 +22,6 @@ void CWallController::initialize(QQmlApplicationEngine *engine)
 }
 QList<CWall *> CWallController::getWalls()
 {
-    gameEngine->load_walls();
+    gameEngine->loadWalls();
     return gameEngine->walls();
 }

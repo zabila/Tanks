@@ -1,54 +1,64 @@
 #include "CTank.h"
+
+#include "Engine/CGameEngine.h"
 #include "Logger.h"
+#include "Logger/LogStream.h"
 #include "pod/Point.h"
 
-CTank::CTank(QObject *parent, const Point &position, const MapRange &map_range) noexcept
-    : QObject(parent)
-    , position_(std::make_unique<PointWrapper>(position, parent))
-    , map_range_(map_range)
-    , speed_(5)
-    , isDrawn_(false)
+CTank::CTank(CGameEngine* gameEngine, const Point& position, const TankData& data)
+    : QObject(nullptr)
+    , id_(getId())
+    , data_(data)
+    , gameEngine_(gameEngine)
+    , position_(std::make_unique<PointWrapper>(position, this))
+    , speed_(2)
+    , is_drawn_(false)
 {}
 
 void CTank::draw()
 {
-    if (isDrawn_)
+    if (is_drawn_)
         return;
-
-    isDrawn_ = true;
-    Log(INFO) << "Tank is drawn " << position_.get();
+    is_drawn_ = true;
 }
 
 void CTank::move(MyEnum::Direction direction)
 {
-    if (!map_range_.contains(position_->value())) {
-        Log(WARNING) << "Tank is out of map range";
-        return;
-    }
-
-    auto new_position = *position_;
+    auto save_position = *position_;
     switch (direction) {
     case MyEnum::Direction::UP:
-        new_position.setY(position_->y() - speed_);
+        position_->setY(position_->y() - speed_);
         break;
     case MyEnum::Direction::DOWN:
-        new_position.setY(position_->y() + speed_);
+        position_->setY(position_->y() + speed_);
         break;
     case MyEnum::Direction::LEFT:
-        new_position.setX(position_->x() - speed_);
+        position_->setX(position_->x() - speed_);
         break;
     case MyEnum::Direction::RIGHT:
-        new_position.setX(position_->x() + speed_);
+        position_->setX(position_->x() + speed_);
         break;
     }
 
-    if (!map_range_.contains(new_position.value())) {
-        Log(WARNING) << "Tank would move out of map range";
+    if (!gameEngine_->inRangOfMap(position_->value())) {
+        *position_ = save_position;
+        Log(WARNING) << "Tank is out of map";
         return;
     }
-    *position_ = new_position;
 
-    isDrawn_ = false;
+    auto [collide_object, is_collide] = gameEngine_->checkingCollisions(this);
+    if (is_collide) {
+        *position_ = save_position;
+        Log(WARNING) << "Tank is collide with " << collide_object->id();
+        return;
+    }
+
+    onPositionChanged();
+}
+
+void CTank::onPositionChanged()
+{
+    is_drawn_ = false;
     draw();
     emit positionChanged();
 }
@@ -58,7 +68,7 @@ void CTank::shoot()
     Log(INFO) << "Player tank is shoot";
 }
 
-PointWrapper *CTank::position() const
+PointWrapper* CTank::position() const
 {
     return position_.get();
 }
@@ -68,12 +78,23 @@ int CTank::speed() const
     return speed_;
 }
 
-bool CTank::isCollide(IDrawable *drawn_object) const
+bool CTank::isCollide(IDrawable* drawn_object) const
 {
-    Point topLeft = position_->value();
-    Point drawn_point = drawn_object->position()->value();
-    int length = 30;
+    const Point& topLeft = position_->value();
+    const Point& drawn_point = drawn_object->position()->value();
+    const int objectSize = data_.size;
 
-    return topLeft.x < drawn_point.x + length && drawn_point.x < topLeft.x + length
-           && topLeft.y < drawn_point.y + length && drawn_point.y < topLeft.y + length;
+    const bool isCollideX = (topLeft.x < drawn_point.x + objectSize) && (drawn_point.x < topLeft.x + objectSize);
+    const bool isCollideY = (topLeft.y < drawn_point.y + objectSize) && (drawn_point.y < topLeft.y + objectSize);
+
+    return isCollideX && isCollideY;
+}
+
+int CTank::id() const
+{
+    return id_;
+}
+int CTank::size() const
+{
+    return data_.size;
 }

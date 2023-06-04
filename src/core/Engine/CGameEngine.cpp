@@ -5,10 +5,10 @@
 
 #include "Logger.h"
 #include "implementations/CTank.h"
-#include "implementations/CTankFactory.h"
 #include "implementations/CWall.h"
-#include "implementations/CWallFactory.h"
+#include "interfaces/IMovable.h"
 #include "interfaces/IWall.h"
+#include "pod/Point.h"
 
 namespace {
 
@@ -20,12 +20,13 @@ int getRandomNumber(int min, int max)
 }
 } // namespace
 
-CGameEngine::CGameEngine(QObject *parent)
+CGameEngine::CGameEngine(QObject* parent)
     : QObject(parent)
     , levelManager_(nullptr)
-    , wallFactory_(std::make_unique<CWallFactory>())
-    , tankFactory_(std::make_unique<CTankFactory>())
-{}
+{
+    tankDataDefault_ = {30, ""};
+    mapRange_ = {500, 500};
+}
 
 void CGameEngine::startGame()
 {
@@ -45,9 +46,7 @@ void CGameEngine::endGame()
 }
 void CGameEngine::updateGame()
 {
-    checkingCollisions();
-
-    for (auto &tank : tanks_enemy_) {
+    for (auto& tank : tanks_enemy_) {
         if (tank == nullptr) {
             Log(WARNING) << "Tank is nullptr";
             continue;
@@ -55,7 +54,7 @@ void CGameEngine::updateGame()
         tank->draw();
     }
 
-    for (auto &wall : walls_) {
+    for (auto& wall : walls_) {
         if (wall == nullptr) {
             Log(WARNING) << "Wall is nullptr";
             continue;
@@ -66,113 +65,128 @@ void CGameEngine::updateGame()
     }
 }
 
-void CGameEngine::create_and_load_enemy_tank(CTankFactory::ETankType type)
+void CGameEngine::createAndLoadEnemyTank()
 {
-    if (!mapRange_.has_value()) {
-        Log(WARNING) << "Map range is empty";
-        return;
-    }
+    LogIfFalseReturn(mapRange_.has_value(), "Map range is empty");
 
-    auto tank = tankFactory_->createTank(type,
-                                         {getRandomNumber(0, mapRange_->height), getRandomNumber(0, mapRange_->height)},
-                                         mapRange_.value());
-    tanks_enemy_.push_back(std::dynamic_pointer_cast<CTank>(tank));
+    Point point = {getRandomNumber(0, mapRange_->height - tankDataDefault_->size),
+                   getRandomNumber(0, mapRange_->height - tankDataDefault_->size)};
+
+    LogIfFalseReturn(tankDataDefault_.has_value(), "Tanks data is empty");
+    auto tank = std::make_shared<CTank>(this, point, tankDataDefault_.value());
+    tanks_enemy_.push_back(std::move(tank));
 }
 
-void CGameEngine::load_enemy_tanks()
+void CGameEngine::loadEnemyTanks()
 {
     tanks_enemy_.clear();
 
     LogIfFalseReturn(mapRange_.has_value(), "Map range is empty");
 
-    create_and_load_enemy_tank(CTankFactory::ETankType::LIGHT);
-    create_and_load_enemy_tank(CTankFactory::ETankType::MEDIUM);
-    create_and_load_enemy_tank(CTankFactory::ETankType::HEAVY);
+    createAndLoadEnemyTank();
+    createAndLoadEnemyTank();
+    createAndLoadEnemyTank();
 }
 
-QList<CTank *> CGameEngine::enemy_tanks() const
+QList<CTank*> CGameEngine::enemyTanks() const
 {
     LogIfFalseReturnValue(!tanks_enemy_.empty(), "Enemy tanks is empty", {});
     LogIfFalseReturnValue(mapRange_.has_value(), "Map range is empty", {});
 
-    QList<CTank *> result;
-    for (auto &tank : tanks_enemy_) {
+    QList<CTank*> result;
+    for (auto& tank : tanks_enemy_) {
         result.append(tank.get());
     }
     return result;
 }
 
-void CGameEngine::load_player_tank()
+void CGameEngine::loadPlayerTank()
 {
     playerTank_.reset();
     LogIfFalseReturn(mapRange_.has_value(), "Map range is empty");
 
-    auto tank = tankFactory_->createTank(CTankFactory::ETankType::PLAYER,
-                                         {getRandomNumber(0, 30), getRandomNumber(0, 30)},
-                                         mapRange_.value());
-    playerTank_ = std::dynamic_pointer_cast<CTank>(tank);
+    Point point = {
+        getRandomNumber(0, 30),
+        getRandomNumber(0, 30),
+    };
+    LogIfFalseReturn(tankDataDefault_.has_value(), "Tanks data is empty");
+    playerTank_ = std::make_shared<CTank>(this, point, tankDataDefault_.value());
 }
 
-CTank *CGameEngine::player_tank() const
+CTank* CGameEngine::playerTank() const
 {
     LogIfFalseReturnValue(mapRange_.has_value(), "Map range is empty", nullptr);
     LogIfNullReturnValue(playerTank_.get(), "Player tank is nullptr", nullptr);
     return playerTank_.get();
 }
 
-void CGameEngine::initMap(int width, int height)
+bool CGameEngine::inRangOfMap(const Point& point) const
 {
-    Log(INFO) << "Init map width: " << width << " height: " << height;
-    mapRange_ = {width, height};
+    LogIfFalseReturnValue(mapRange_.has_value(), "Map range is empty", false);
+    return mapRange_->contains(point);
 }
-void CGameEngine::checkingCollisions()
+
+CGameEngine::CollisionResult CGameEngine::checkingCollisions(IMovable* movable_object) const
 {
-    for (const auto &enemyTank : tanks_enemy_) {
-        checkCollisionAndDoAction(playerTank_.get(), enemyTank.get(), []() {
-            Log(INFO) << "Player tank collide with enemy tank";
-        });
+    if (movable_object->id() != playerTank_->id() && movable_object->isCollide(playerTank_.get())) {
+        return {playerTank_.get(), true};
+    }
 
-        for (const auto &wall : walls_) {
-            checkCollisionAndDoAction(enemyTank.get(), wall.get(), []() {
-                Log(INFO) << "Enemy tank collide with wall";
-            });
+    auto collisionIt = std::find_if(tanks_enemy_.begin(), tanks_enemy_.end(), [movable_object](const auto& enemyTank) {
+        if (movable_object->id() == enemyTank->id()) {
+            return false;
         }
+        return movable_object->isCollide(enemyTank.get());
+    });
+
+    if (collisionIt != tanks_enemy_.end()) {
+        return {collisionIt->get(), true};
     }
 
-    for (size_t i = 0; i < tanks_enemy_.size(); ++i) {
-        for (size_t j = i + 1; j < tanks_enemy_.size(); ++j) {
-            checkCollisionAndDoAction(tanks_enemy_[i].get(), tanks_enemy_[j].get(), []() {
-                Log(INFO) << "Enemy tank collide with enemy tank";
-            });
-        }
+    auto collisionWallIt = std::find_if(walls_.begin(), walls_.end(), [movable_object](const auto& wall) {
+        return movable_object->isCollide(wall.get());
+    });
+
+    if (collisionWallIt != walls_.end()) {
+        return {collisionWallIt->get(), true};
     }
 
-    for (const auto &wall : walls_) {
-        checkCollisionAndDoAction(playerTank_.get(), wall.get(), []() { Log(INFO) << "Player tank collide with wall"; });
-    }
+    return {nullptr, false};
 }
-void CGameEngine::load_walls()
+
+void CGameEngine::loadWalls()
 {
     walls_.clear();
 
     LogIfFalseReturn(mapRange_.has_value(), "Map range is empty");
 
     for (int i = 0; i < 10; ++i) {
-        auto wall = wallFactory_->createWall(IWallFactory::EWallsType::BRICK,
-                                             {getRandomNumber(0, mapRange_->height),
-                                              getRandomNumber(0, mapRange_->height)},
-                                             mapRange_.value());
-        walls_.push_back(std::dynamic_pointer_cast<CWall>(wall));
+        Point point = {getRandomNumber(0, mapRange_->height - tankDataDefault_->size),
+                       getRandomNumber(0, mapRange_->height - tankDataDefault_->size)};
+        auto wall = std::make_shared<CWall>(this, point);
+        walls_.push_back(std::move(wall));
     }
 }
-QList<CWall *> CGameEngine::walls() const
+QList<CWall*> CGameEngine::walls() const
 {
     LogIfFalseReturnValue(!walls_.empty(), "Tanks is empty", {});
     LogIfFalseReturnValue(mapRange_.has_value(), "Map range is empty", {});
 
-    QList<CWall *> result;
-    for (auto &wall : walls_) {
+    QList<CWall*> result;
+    for (auto& wall : walls_) {
         result.append(wall.get());
     }
     return result;
+}
+
+MapData CGameEngine::mapData() const
+{
+    LogIfFalseReturnValue(mapRange_.has_value(), "Map range is empty", {});
+    return mapRange_.value();
+}
+
+TankData CGameEngine::tankData() const
+{
+    LogIfFalseReturnValue(tankDataDefault_.has_value(), "Tank data is empty", {});
+    return tankDataDefault_.value();
 }

@@ -22,6 +22,6 @@ void CEnemyTanksController::initialize(QQmlApplicationEngine *engine)
 }
 QList<CTank *> CEnemyTanksController::getEnemyTanks()
 {
-    gameEngine->load_enemy_tanks();
-    return gameEngine->enemy_tanks();
+    gameEngine->loadEnemyTanks();
+    return gameEngine->enemyTanks();
 }

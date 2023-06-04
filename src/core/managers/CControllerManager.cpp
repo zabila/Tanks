@@ -31,20 +31,19 @@ void CControllerManager::init()
     controllers_.push_back(std::move(wallController));
 }
 
-void CControllerManager::initializeAll(QQmlApplicationEngine *engine)
+void CControllerManager::initializeAll(QQmlApplicationEngine* engine)
 {
-    for (auto &controller : controllers_) {
+    for (auto& controller : controllers_) {
         controller->initialize(engine);
     }
 }
 
 void CControllerManager::RegisterMetaTypes()
 {
-    qRegisterMetaType<ITank *>("ITank");
-    qRegisterMetaType<CTank *>("CTank");
+    qRegisterMetaType<ITank*>("ITank");
+    qRegisterMetaType<CTank*>("CTank");
     qRegisterMetaType<PointWrapper>("PointWrapper");
     qRegisterMetaType<EDirection>("EDirection");
-    qmlRegisterType<CTank>("CustomTypes", 1, 0, "CTank");
     qmlRegisterUncreatableType<MyEnum>("MyEnums",
                                        1,
                                        0,

@@ -1,52 +1,62 @@
 #pragma once
 
 #include <memory>
+#include <tuple>
 
 #include <QObject>
 #include <QTimer>
 
+#include "interfaces/IDrawable.h"
+#include "interfaces/IMovable.h"
 #include "interfaces/ITank.h"
-#include "interfaces/ITankFactory.h"
-#include "interfaces/IWallFactory.h"
 
+#include "Engine/CGameEngine.h"
 #include "implementations/CTank.h"
 #include "implementations/CWall.h"
 #include "managers/CLevelManager.h"
-#include "pod/MapRange.h"
+#include "pod/MapData.h"
+#include "pod/TankData.h"
 
 class CGameEngine : public QObject
 {
     Q_OBJECT
+
+    using CollisionResult = std::tuple<IDrawable*, bool>;
+
 public:
-    explicit CGameEngine(QObject *parent = nullptr);
+    explicit CGameEngine(QObject* parent = nullptr);
     ~CGameEngine() override = default;
 
     void startGame();
     void endGame();
-    void initMap(int width, int height);
 
-    void load_enemy_tanks();
-    QList<CTank *> enemy_tanks() const;
+    MapData mapData() const;
+    TankData tankData() const;
 
-    void load_player_tank();
-    CTank *player_tank() const;
+    bool inRangOfMap(const Point& point) const;
 
-    void load_walls();
-    QList<CWall *> walls() const;
+    void loadEnemyTanks();
+    QList<CTank*> enemyTanks() const;
+
+    void loadPlayerTank();
+    CTank* playerTank() const;
+
+    void loadWalls();
+    QList<CWall*> walls() const;
+
+    CollisionResult checkingCollisions(IMovable* movable_object) const;
 
 private slots:
     void updateGame();
 
 private:
-    void create_and_load_enemy_tank(ITankFactory::ETankType type);
-    void checkingCollisions();
+    void createAndLoadEnemyTank();
 
     std::unique_ptr<QTimer> gameTimer_{};
     std::unique_ptr<CLevelManager> levelManager_{};
-    std::unique_ptr<IWallFactory> wallFactory_{};
-    std::unique_ptr<ITankFactory> tankFactory_{};
     std::shared_ptr<CTank> playerTank_{};
     std::vector<std::shared_ptr<CTank>> tanks_enemy_{};
     std::vector<std::shared_ptr<CWall>> walls_{};
-    MapRangeOpt mapRange_ = std::nullopt;
+    MapDataOpt mapRange_ = std::nullopt;
+    TankDataOpt tankDataDefault_ = std::nullopt;
 };

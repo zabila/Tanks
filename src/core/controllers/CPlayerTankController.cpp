@@ -23,6 +23,6 @@ void CPlayerTankController::initialize(QQmlApplicationEngine *engine)
 
 CTank *CPlayerTankController::getPlayerTank()
 {
-    gameEngine->load_player_tank();
-    return gameEngine->player_tank();
+    gameEngine->loadPlayerTank();
+    return gameEngine->playerTank();
 }

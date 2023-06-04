@@ -5,7 +5,7 @@
 #include "interfaces/IDrawable.h"
 #include "interfaces/IMovable.h"
 
-class IBullet : public IDrawable, public IMovable
+class IBullet : public IMovable
 {
 public:
     ~IBullet() override = default;

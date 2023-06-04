@@ -5,7 +5,7 @@
 #include "interfaces/IDrawable.h"
 #include "interfaces/IMovable.h"
 
-class ITank : public IDrawable, public IMovable
+class ITank : public IMovable
 {
 public:
     ~ITank() override = default;

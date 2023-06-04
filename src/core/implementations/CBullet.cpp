@@ -1,9 +1,13 @@
 #include "CBullet.h"
+
+#include "Engine/CGameEngine.h"
 #include "Logger.h"
 
-CBullet::CBullet(QObject *parent, const Point &position) noexcept
-    : QObject(parent)
-    , position_(std::make_unique<PointWrapper>(position, parent))
+CBullet::CBullet(CGameEngine* gameEngine, const Point& position)
+    : QObject(nullptr)
+    , id_(getId())
+    , gameEngine_(gameEngine)
+    , position_(std::make_unique<PointWrapper>(position, this))
     , speed_(1)
     , isDrawn_(false)
 {}
@@ -23,7 +27,7 @@ void CBullet::move(MyEnum::Direction direction)
     Log(INFO) << "Bullet is moved" << toString(direction);
 }
 
-PointWrapper *CBullet::position() const
+PointWrapper* CBullet::position() const
 {
     return position_.get();
 }
@@ -31,4 +35,8 @@ PointWrapper *CBullet::position() const
 int CBullet::speed() const
 {
     return speed_;
+}
+int CBullet::id() const
+{
+    return id_;
 }

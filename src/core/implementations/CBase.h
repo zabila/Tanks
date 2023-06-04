@@ -16,6 +16,7 @@ public:
     Q_INVOKABLE PointWrapper *position() const override;
 
 private:
+    int id_;
     std::unique_ptr<PointWrapper> position_;
     bool isDrawn_;
 };

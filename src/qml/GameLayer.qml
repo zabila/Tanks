@@ -28,7 +28,7 @@ Item {
             Rectangle
             {
                 id: map
-                height: 500
+                height: gameController.mapHeight
                 width: height
                 border.width: 2
                 border.color: "blue"
@@ -37,8 +37,8 @@ Item {
                 {
                     id: playertTank
                     color: "black"
-                    width: 30
-                    height: 30
+                    width: player.size
+                    height: player.size
                     focus: true
                     x: player.position.x
                     y: player.position.y
@@ -51,8 +51,8 @@ Item {
                     Rectangle
                     {
                         color: "yellow"
-                        width: 30
-                        height: 30
+                        width: modelData.size
+                        height: modelData.size
                         focus: true
                         x: modelData.position.x
                         y: modelData.position.y
@@ -95,6 +95,24 @@ Item {
         }
     }
 
+
+    Timer {
+        interval: 500 // 500 milliseconds = 0.5 seconds
+        running: true
+        repeat: true
+        onTriggered: {
+             var tankDirections = [EDirection.DOWN, EDirection.LEFT, EDirection.RIGHT, EDirection.UP]
+             for (var i = 0; i < tanks.length; i++) {
+             var randomIndex = Math.floor(Math.random() * tankDirections.length);
+             var randomDirection = tankDirections[randomIndex];
+             for(var j = 0; j < 5 ; j++)
+             {
+                tanks[i].move(randomDirection);
+             }
+            }
+        }
+    }
+
     Connections {
         target: playerTankController
     }
@@ -112,7 +130,6 @@ Item {
     property var walls;
 
     Component.onCompleted: {
-        gameController.initMap(map.width, map.height)
         player = playerTankController.playerTank
         tanks = enemyTanksController.enemyTanks
         walls = wallController.walls
