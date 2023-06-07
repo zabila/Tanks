@@ -50,7 +50,9 @@ void CTank::move(MyEnum::Direction direction)
     if (is_collide) {
         *position_ = save_position;
         Log(WARNING) << "Tank is collide with " << collide_object->id();
-        return;
+
+        gameEngine_->detroitObject(collide_object);
+        gameEngine_->updateEnemyTanks();
     }
 
     onPositionChanged();

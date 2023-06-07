@@ -47,8 +47,7 @@ Item {
                 Repeater
                 {
                     model: tanks
-
-                    Rectangle
+                    delegate: Rectangle
                     {
                         color: "yellow"
                         width: modelData.size
@@ -63,8 +62,7 @@ Item {
                 Repeater
                 {
                     model: walls
-
-                    Rectangle
+                    delegate: Rectangle
                     {
                         color: "green"
                         width: 30

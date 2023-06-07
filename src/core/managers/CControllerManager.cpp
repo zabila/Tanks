@@ -9,14 +9,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-CControllerManager::CControllerManager()
+void CControllerManager::init(QQmlApplicationEngine* engine)
 {
-    init();
-}
-
-void CControllerManager::init()
-{
-    gameEngine = std::make_shared<CGameEngine>();
+    gameEngine = std::make_shared<CGameEngine>(engine);
 
     auto gameController = std::make_unique<CGameController>(gameEngine);
     controllers_.push_back(std::move(gameController));
@@ -49,4 +44,9 @@ void CControllerManager::RegisterMetaTypes()
                                        0,
                                        "EDirection",
                                        QStringLiteral("Cannot create objects of type MyEnum"));
+}
+
+CControllerManager::CControllerManager(QQmlApplicationEngine* engine)
+{
+    init(engine);
 }

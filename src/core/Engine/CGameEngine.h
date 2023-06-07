@@ -4,6 +4,7 @@
 #include <tuple>
 
 #include <QObject>
+#include <QQmlApplicationEngine>
 #include <QTimer>
 
 #include "interfaces/IDrawable.h"
@@ -24,7 +25,7 @@ class CGameEngine : public QObject
     using CollisionResult = std::tuple<IDrawable*, bool>;
 
 public:
-    explicit CGameEngine(QObject* parent = nullptr);
+    explicit CGameEngine(QQmlApplicationEngine* engine);
     ~CGameEngine() override = default;
 
     void startGame();
@@ -37,12 +38,16 @@ public:
 
     void loadEnemyTanks();
     QList<CTank*> enemyTanks() const;
+    void updateEnemyTanks();
 
     void loadPlayerTank();
     CTank* playerTank() const;
 
     void loadWalls();
     QList<CWall*> walls() const;
+    void updateWalls();
+
+    void detroitObject(IDrawable* object);
 
     CollisionResult checkingCollisions(IMovable* movable_object) const;
 
@@ -52,11 +57,14 @@ private slots:
 private:
     void createAndLoadEnemyTank();
 
+    QQmlApplicationEngine* qmlEngine_;
+
     std::unique_ptr<QTimer> gameTimer_{};
     std::unique_ptr<CLevelManager> levelManager_{};
     std::shared_ptr<CTank> playerTank_{};
     std::vector<std::shared_ptr<CTank>> tanks_enemy_{};
     std::vector<std::shared_ptr<CWall>> walls_{};
+
     MapDataOpt mapRange_ = std::nullopt;
     TankDataOpt tankDataDefault_ = std::nullopt;
 };

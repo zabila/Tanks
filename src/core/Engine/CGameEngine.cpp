@@ -3,6 +3,8 @@
 #include <memory>
 #include <random>
 
+#include <QQmlContext>
+
 #include "Logger.h"
 #include "implementations/CTank.h"
 #include "implementations/CWall.h"
@@ -20,8 +22,9 @@ int getRandomNumber(int min, int max)
 }
 } // namespace
 
-CGameEngine::CGameEngine(QObject* parent)
-    : QObject(parent)
+CGameEngine::CGameEngine(QQmlApplicationEngine* engine)
+    : QObject(nullptr)
+    , qmlEngine_(engine)
     , levelManager_(nullptr)
 {
     tankDataDefault_ = {30, ""};
@@ -98,6 +101,11 @@ QList<CTank*> CGameEngine::enemyTanks() const
         result.append(tank.get());
     }
     return result;
+}
+
+void CGameEngine::updateEnemyTanks()
+{
+    qmlEngine_->rootContext()->setContextProperty("tanks", QVariant::fromValue(enemyTanks()));
 }
 
 void CGameEngine::loadPlayerTank()
@@ -189,4 +197,41 @@ TankData CGameEngine::tankData() const
 {
     LogIfFalseReturnValue(tankDataDefault_.has_value(), "Tank data is empty", {});
     return tankDataDefault_.value();
+}
+void CGameEngine::detroitObject(IDrawable* object)
+{
+    if (object == nullptr) {
+        Log(WARNING) << "Object is nullptr";
+        return;
+    }
+
+    //    if (object->id() == playerTank_->id()) {
+    //        Log(INFO) << "Player tank is destroyed";
+    //        playerTank_.reset();
+    //        return;
+    //    }
+
+    auto tankIt = std::find_if(tanks_enemy_.begin(), tanks_enemy_.end(), [object](const auto& tank) {
+        return tank->id() == object->id();
+    });
+
+    if (tankIt != tanks_enemy_.end()) {
+        Log(INFO) << "Enemy tank is destroyed with id: " << object->id();
+        tanks_enemy_.erase(tankIt);
+        return;
+    }
+
+    auto wallIt = std::find_if(walls_.begin(), walls_.end(), [object](const auto& wall) {
+        return wall->id() == object->id();
+    });
+
+    if (wallIt != walls_.end()) {
+        Log(INFO) << "Wall is destroyed with id: " << object->id();
+        walls_.erase(wallIt);
+        return;
+    }
+}
+void CGameEngine::updateWalls()
+{
+    qmlEngine_->rootContext()->setContextProperty("walls", QVariant::fromValue(walls()));
 }
