@@ -5,6 +5,7 @@
 #include <QObject>
 
 #include "interfaces/IWall.h"
+#include "pod/Enums.h"
 #include "pod/Point.h"
 
 class CGameEngine;
@@ -19,6 +20,7 @@ public:
 
     int id() const override;
     PointWrapper* position() const override;
+    MyEnum::ObjectType type() const override;
 
     Q_INVOKABLE void draw() override;
     Q_INVOKABLE bool isDestroyable() const override;
@@ -28,6 +30,7 @@ signals:
 
 private:
     const int id_;
+    const MyEnum::ObjectType type_;
     CGameEngine* gameEngine_;
     std::unique_ptr<PointWrapper> position_;
     bool isDestroyable_;

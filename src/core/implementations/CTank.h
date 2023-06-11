@@ -27,6 +27,7 @@ public:
     PointWrapper* position() const override;
     int speed() const override;
     bool isCollide(IDrawable* drawn_object) const override;
+    MyEnum::ObjectType type() const override;
 
     Q_INVOKABLE void shoot() override;
     Q_INVOKABLE void draw() override;

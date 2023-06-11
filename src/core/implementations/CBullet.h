@@ -18,6 +18,7 @@ public:
     ~CBullet() override = default;
 
     int id() const override;
+    MyEnum::ObjectType type() const override;
 
     Q_INVOKABLE void draw() override;
     Q_INVOKABLE void move(MyEnum::Direction) override;

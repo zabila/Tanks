@@ -40,3 +40,7 @@ int CBullet::id() const
 {
     return id_;
 }
+MyEnum::ObjectType CBullet::type() const
+{
+    return MyEnum::BULLET;
+}

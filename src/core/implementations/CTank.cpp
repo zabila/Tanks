@@ -49,10 +49,7 @@ void CTank::move(MyEnum::Direction direction)
     auto [collide_object, is_collide] = gameEngine_->checkingCollisions(this);
     if (is_collide) {
         *position_ = save_position;
-        Log(WARNING) << "Tank is collide with " << collide_object->id();
-
         gameEngine_->detroitObject(collide_object);
-        gameEngine_->updateEnemyTanks();
     }
 
     onPositionChanged();
@@ -99,4 +96,9 @@ int CTank::id() const
 int CTank::size() const
 {
     return data_.size;
+}
+
+MyEnum::ObjectType CTank::type() const
+{
+    return MyEnum::ObjectType::TANK;
 }

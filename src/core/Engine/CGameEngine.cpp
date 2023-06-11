@@ -8,8 +8,10 @@
 #include "Logger.h"
 #include "implementations/CTank.h"
 #include "implementations/CWall.h"
+#include "implementations/Logger/LogStream.h"
 #include "interfaces/IMovable.h"
 #include "interfaces/IWall.h"
+#include "pod/Enums.h"
 #include "pod/Point.h"
 
 namespace {
@@ -76,7 +78,9 @@ void CGameEngine::createAndLoadEnemyTank()
                    getRandomNumber(0, mapRange_->height - tankDataDefault_->size)};
 
     LogIfFalseReturn(tankDataDefault_.has_value(), "Tanks data is empty");
-    auto tank = std::make_shared<CTank>(this, point, tankDataDefault_.value());
+
+    auto enemy_tank_data = tankDataDefault_.value();
+    auto tank = std::make_shared<CTank>(this, point, enemy_tank_data);
     tanks_enemy_.push_back(std::move(tank));
 }
 
@@ -101,11 +105,6 @@ QList<CTank*> CGameEngine::enemyTanks() const
         result.append(tank.get());
     }
     return result;
-}
-
-void CGameEngine::updateEnemyTanks()
-{
-    qmlEngine_->rootContext()->setContextProperty("tanks", QVariant::fromValue(enemyTanks()));
 }
 
 void CGameEngine::loadPlayerTank()
@@ -205,12 +204,6 @@ void CGameEngine::detroitObject(IDrawable* object)
         return;
     }
 
-    //    if (object->id() == playerTank_->id()) {
-    //        Log(INFO) << "Player tank is destroyed";
-    //        playerTank_.reset();
-    //        return;
-    //    }
-
     auto tankIt = std::find_if(tanks_enemy_.begin(), tanks_enemy_.end(), [object](const auto& tank) {
         return tank->id() == object->id();
     });
@@ -228,10 +221,7 @@ void CGameEngine::detroitObject(IDrawable* object)
     if (wallIt != walls_.end()) {
         Log(INFO) << "Wall is destroyed with id: " << object->id();
         walls_.erase(wallIt);
+        emit onWallChanged();
         return;
     }
-}
-void CGameEngine::updateWalls()
-{
-    qmlEngine_->rootContext()->setContextProperty("walls", QVariant::fromValue(walls()));
 }

@@ -11,14 +11,20 @@
 class CWallController : public QObject, public IController
 {
     Q_OBJECT
-    Q_PROPERTY(QList<CWall *> walls READ getWalls CONSTANT)
+    Q_PROPERTY(QList<CWall*> walls READ getWalls NOTIFY wallsChanged)
 public:
-    explicit CWallController(std::shared_ptr<CGameEngine> engine, QObject *parent = nullptr);
+    explicit CWallController(std::shared_ptr<CGameEngine> engine, QObject* parent = nullptr);
     ~CWallController() override = default;
 
-    void initialize(QQmlApplicationEngine *engine) override;
+    void initialize(QQmlApplicationEngine* engine) override;
 
-    QList<CWall *> getWalls();
+    QList<CWall*> getWalls();
+
+public slots:
+    void onEnemyTanksChanged();
+
+signals:
+    void wallsChanged();
 
 private:
     std::shared_ptr<CGameEngine> gameEngine;

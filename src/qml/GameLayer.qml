@@ -46,6 +46,7 @@ Item {
 
                 Repeater
                 {
+                    id: tanksRepeater
                     model: tanks
                     delegate: Rectangle
                     {
@@ -61,6 +62,7 @@ Item {
 
                 Repeater
                 {
+                    id: wallsRepeater
                     model: walls
                     delegate: Rectangle
                     {
@@ -132,4 +134,13 @@ Item {
         tanks = enemyTanksController.enemyTanks
         walls = wallController.walls
     }
+
+//It is not working
+    onWallsChanged: {
+        if (walls.length != wallController.walls.length)
+        {
+           walls = wallController.walls
+        }
+    }
+
 }

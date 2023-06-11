@@ -8,6 +8,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <qobject.h>
 
 void CControllerManager::init(QQmlApplicationEngine* engine)
 {
@@ -23,6 +24,10 @@ void CControllerManager::init(QQmlApplicationEngine* engine)
     controllers_.push_back(std::move(enemyTanksController));
 
     auto wallController = std::make_unique<CWallController>(gameEngine);
+    QObject::connect(gameEngine.get(),
+                     &CGameEngine::onWallChanged,
+                     wallController.get(),
+                     &CWallController::onEnemyTanksChanged);
     controllers_.push_back(std::move(wallController));
 }
 

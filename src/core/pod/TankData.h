@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Logger.h"
+#include "pod/Enums.h"
 
 struct TankData
 {

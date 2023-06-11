@@ -38,18 +38,19 @@ public:
 
     void loadEnemyTanks();
     QList<CTank*> enemyTanks() const;
-    void updateEnemyTanks();
 
     void loadPlayerTank();
     CTank* playerTank() const;
 
     void loadWalls();
     QList<CWall*> walls() const;
-    void updateWalls();
 
     void detroitObject(IDrawable* object);
 
     CollisionResult checkingCollisions(IMovable* movable_object) const;
+
+signals:
+    void onWallChanged();
 
 private slots:
     void updateGame();
@@ -63,6 +64,8 @@ private:
     std::unique_ptr<CLevelManager> levelManager_{};
     std::shared_ptr<CTank> playerTank_{};
     std::vector<std::shared_ptr<CTank>> tanks_enemy_{};
+
+    bool isShouldUpdateWalls_ = false;
     std::vector<std::shared_ptr<CWall>> walls_{};
 
     MapDataOpt mapRange_ = std::nullopt;
