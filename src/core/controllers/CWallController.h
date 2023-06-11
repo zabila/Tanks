@@ -17,15 +17,16 @@ public:
     ~CWallController() override = default;
 
     void initialize(QQmlApplicationEngine* engine) override;
-
     QList<CWall*> getWalls();
 
 public slots:
-    void onEnemyTanksChanged();
+    void onWallsChanged();
 
 signals:
     void wallsChanged();
 
 private:
+    void emitWallsChanged();
+
     std::shared_ptr<CGameEngine> gameEngine;
 };

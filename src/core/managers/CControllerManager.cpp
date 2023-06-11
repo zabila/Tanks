@@ -21,13 +21,17 @@ void CControllerManager::init(QQmlApplicationEngine* engine)
     controllers_.push_back(std::move(playerTankController));
 
     auto enemyTanksController = std::make_unique<CEnemyTanksController>(gameEngine);
+    QObject::connect(gameEngine.get(),
+                     &CGameEngine::onEnemyTanksChanged,
+                     enemyTanksController.get(),
+                     &CEnemyTanksController::onEnemyTanksChanged);
     controllers_.push_back(std::move(enemyTanksController));
 
     auto wallController = std::make_unique<CWallController>(gameEngine);
     QObject::connect(gameEngine.get(),
                      &CGameEngine::onWallChanged,
                      wallController.get(),
-                     &CWallController::onEnemyTanksChanged);
+                     &CWallController::onWallsChanged);
     controllers_.push_back(std::move(wallController));
 }
 

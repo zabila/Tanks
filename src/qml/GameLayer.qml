@@ -125,22 +125,14 @@ Item {
         target: wallController
     }
 
-    property var player;
-    property var tanks;
-    property var walls;
+    property var player : playerTankController.playerTank
+    property var tanks : enemyTanksController.enemyTanks
+    property var walls : wallController.walls
 
-    Component.onCompleted: {
-        player = playerTankController.playerTank
-        tanks = enemyTanksController.enemyTanks
-        walls = wallController.walls
-    }
-
-//It is not working
     onWallsChanged: {
         if (walls.length != wallController.walls.length)
         {
            walls = wallController.walls
         }
     }
-
 }

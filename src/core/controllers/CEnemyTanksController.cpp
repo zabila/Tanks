@@ -26,8 +26,12 @@ QList<CTank*> CEnemyTanksController::getEnemyTanks()
 {
     return gameEngine->enemyTanks();
 }
-
 void CEnemyTanksController::onEnemyTanksChanged()
 {
+    emitEnemyTanksChanged();
+}
+void CEnemyTanksController::emitEnemyTanksChanged()
+{
+    Log(INFO) << "Enemy tanks changed in CEnemyTanksController";
     emit enemyTanksChanged();
 }

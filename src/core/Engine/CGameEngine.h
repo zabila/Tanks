@@ -51,6 +51,7 @@ public:
 
 signals:
     void onWallChanged();
+    void onEnemyTanksChanged();
 
 private slots:
     void updateGame();

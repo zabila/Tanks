@@ -27,7 +27,13 @@ QList<CWall*> CWallController::getWalls()
 {
     return gameEngine->walls();
 }
-void CWallController::onEnemyTanksChanged()
+
+void CWallController::onWallsChanged()
+{
+    emitWallsChanged();
+}
+
+void CWallController::emitWallsChanged()
 {
     Log(INFO) << "Walls changed in CWallController";
     emit wallsChanged();

@@ -17,7 +17,6 @@ public:
     ~CEnemyTanksController() override = default;
 
     void initialize(QQmlApplicationEngine* engine) override;
-
     QList<CTank*> getEnemyTanks();
 
 public slots:
@@ -27,5 +26,7 @@ signals:
     void enemyTanksChanged();
 
 private:
+    void emitEnemyTanksChanged();
+
     std::shared_ptr<CGameEngine> gameEngine;
 };

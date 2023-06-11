@@ -211,6 +211,7 @@ void CGameEngine::detroitObject(IDrawable* object)
     if (tankIt != tanks_enemy_.end()) {
         Log(INFO) << "Enemy tank is destroyed with id: " << object->id();
         tanks_enemy_.erase(tankIt);
+        emit onEnemyTanksChanged();
         return;
     }
 
