@@ -2,6 +2,7 @@
 
 #include <type_traits>
 
+#include "interfaces/IDrawable.h"
 #include "pod/Enums.h"
 
 class IMovable : public IDrawable

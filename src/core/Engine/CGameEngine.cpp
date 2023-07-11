@@ -10,8 +10,6 @@
 #include "implementations/CWall.h"
 #include "implementations/Logger/LogStream.h"
 #include "interfaces/IMovable.h"
-#include "interfaces/IWall.h"
-#include "pod/Enums.h"
 #include "pod/Point.h"
 
 namespace {

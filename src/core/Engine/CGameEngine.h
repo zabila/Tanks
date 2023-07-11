@@ -9,7 +9,6 @@
 
 #include "interfaces/IDrawable.h"
 #include "interfaces/IMovable.h"
-#include "interfaces/ITank.h"
 
 #include "Engine/CGameEngine.h"
 #include "implementations/CTank.h"

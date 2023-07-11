@@ -284,4 +284,7 @@ fabric.properties
 *.cxxflags
 *.cflags
 
-
+build
+.cache
+.vscode
+*.user

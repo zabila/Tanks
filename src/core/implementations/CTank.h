@@ -7,7 +7,6 @@
 
 #include "interfaces/ITank.h"
 #include "pod/Enums.h"
-#include "pod/MapData.h"
 #include "pod/Point.h"
 #include "pod/TankData.h"
 
@@ -31,7 +30,8 @@ public:
 
     Q_INVOKABLE void shoot() override;
     Q_INVOKABLE void draw() override;
-    Q_INVOKABLE void move(MyEnum::Direction direction) override;
+    Q_INVOKABLE void extracted();
+    void move(MyEnum::Direction direction) override;
 
     int size() const;
 
@@ -45,6 +45,7 @@ private:
     TankData data_;
     CGameEngine* gameEngine_;
     std::unique_ptr<PointWrapper> position_;
+    PointWrapper previous_position_;
     int speed_;
     bool is_drawn_;
 };

@@ -2,7 +2,6 @@
 
 #include <QObject>
 
-#include "interfaces/IDrawable.h"
 #include "interfaces/IMovable.h"
 
 class ITank : public IMovable
