@@ -3,15 +3,14 @@
 #include <QQmlContext>
 
 #include "Logger.h"
-#include "implementations/CEnemyTank.h"
-#include "implementations/CPlayerTank.h"
+#include "implementations/CTank.h"
 
-CGameController::CGameController(std::shared_ptr<CGameManager> gameManager, QObject *parent)
+CGameController::CGameController(std::shared_ptr<CGameEngine> engine, QObject* parent)
     : QObject(parent)
-    , gameManager_(gameManager)
+    , gameEngine(engine)
 {}
 
-void CGameController::initialize(QQmlApplicationEngine *engine)
+void CGameController::initialize(QQmlApplicationEngine* engine)
 {
     if (!engine) {
         Log(FATAL) << "Engine is nullptr";
@@ -24,17 +23,27 @@ void CGameController::initialize(QQmlApplicationEngine *engine)
         return;
     }
 
-    qRegisterMetaType<ITank *>("ITank");
-    qRegisterMetaType<CPlayerTank *>("CPlayerTank");
+    qRegisterMetaType<ITank*>("ITank");
+    qRegisterMetaType<CTank*>("CTank");
 
     context->setContextProperty("gameController", this);
 }
 
 void CGameController::startGame()
 {
-    gameManager_->startGame();
+    gameEngine->startGame();
 }
 void CGameController::endGame()
 {
-    gameManager_->endGame();
+    gameEngine->endGame();
+}
+int CGameController::mapWidth() const
+{
+    const auto& data = gameEngine->mapData();
+    return data.width;
+}
+int CGameController::mapHeight() const
+{
+    const auto& data = gameEngine->mapData();
+    return data.height;
 }

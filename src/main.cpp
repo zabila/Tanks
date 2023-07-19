@@ -4,13 +4,13 @@
 #include "Logger.h"
 #include "managers/CControllerManager.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     g_logger = new LoggerImpl("log.txt");
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    CControllerManager controllerManager;
+    CControllerManager controllerManager(&engine);
     controllerManager.RegisterMetaTypes();
     controllerManager.initializeAll(&engine);
     engine.addImportPath(":/");

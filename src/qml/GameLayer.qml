@@ -28,18 +28,52 @@ Item {
             Rectangle
             {
                 id: map
-                height: 500
+                height: gameController.mapHeight
                 width: height
-                color: "blue"
+                border.width: 2
+                border.color: "blue"
 
                 Rectangle
                 {
+                    id: playertTank
                     color: "black"
-                    width: 30
-                    height: 30
+                    width: player.size
+                    height: player.size
                     focus: true
                     x: player.position.x
                     y: player.position.y
+                }
+
+                Repeater
+                {
+                    id: tanksRepeater
+                    model: tanks
+                    delegate: Rectangle
+                    {
+                        color: "yellow"
+                        width: modelData.size
+                        height: modelData.size
+                        focus: true
+                        x: modelData.position.x
+                        y: modelData.position.y
+                    }
+
+                }
+
+                Repeater
+                {
+                    id: wallsRepeater
+                    model: walls
+                    delegate: Rectangle
+                    {
+                        color: "green"
+                        width: 30
+                        height: 30
+                        focus: true
+                        x: modelData.position.x
+                        y: modelData.position.y
+                    }
+
                 }
             }
 
@@ -61,6 +95,24 @@ Item {
         }
     }
 
+
+    Timer {
+        interval: 500 // 500 milliseconds = 0.5 seconds
+        running: true
+        repeat: true
+        onTriggered: {
+             var tankDirections = [EDirection.DOWN, EDirection.LEFT, EDirection.RIGHT, EDirection.UP]
+             for (var i = 0; i < tanks.length; i++) {
+             var randomIndex = Math.floor(Math.random() * tankDirections.length);
+             var randomDirection = tankDirections[randomIndex];
+             for(var j = 0; j < 5 ; j++)
+             {
+                tanks[i].move(randomDirection);
+             }
+            }
+        }
+    }
+
     Connections {
         target: playerTankController
     }
@@ -69,33 +121,18 @@ Item {
         target: enemyTanksController
     }
 
-    property var player: playerTankController.playerTank
-    property var tanks: enemyTanksController.ememyTanks
+    Connections {
+        target: wallController
+    }
 
-    Component.onCompleted: {
-        console.log("---------------");
-        console.log(player);
-        console.log(player.position);
-        console.log(player.position.x);
-        console.log(player.position.y);
-        console.log(player.speed);
-        player.draw();
-        player.move(EDirection.UP);
-        player.shoot();
-        console.log("---------------");
+    property var player : playerTankController.playerTank
+    property var tanks : enemyTanksController.enemyTanks
+    property var walls : wallController.walls
 
-        for (var i = 0; i < tanks.length; i++) {
-            var tank = tanks[i];
-            console.log("---------------");
-            console.log(tank);
-            console.log(tank.position);
-            console.log(tank.position.x);
-            console.log(tank.position.y);
-            console.log(tank.speed);
-            tank.draw();
-            tank.move(EDirection.UP);
-            tank.shoot();
-            console.log("---------------");
+    onWallsChanged: {
+        if (walls.length != wallController.walls.length)
+        {
+           walls = wallController.walls
         }
     }
 }

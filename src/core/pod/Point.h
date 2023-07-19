@@ -16,6 +16,8 @@ public:
         os << "x: " << point.x << " y: " << point.y;
         return os;
     }
+
+    bool operator==(const Point &other) const { return x == other.x && y == other.y; }
 };
 
 class PointWrapper : public QObject
@@ -123,6 +125,8 @@ public:
 
     Q_INVOKABLE int x() const { return point.x; }
     Q_INVOKABLE int y() const { return point.y; }
+
+    Point value() const { return point; }
 
     friend std::ostream &operator<<(std::ostream &os, const PointWrapper &point_wrapper)
     {

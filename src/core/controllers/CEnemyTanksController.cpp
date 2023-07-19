@@ -1,32 +1,37 @@
 #include "CEnemyTanksController.h"
 
+#include <utility>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
 #include "Logger.h"
 
-CEnemyTanksController::CEnemyTanksController(std::shared_ptr<CGameManager> gameManager, QObject *parent)
+CEnemyTanksController::CEnemyTanksController(std::shared_ptr<CGameEngine> engine, QObject* parent)
     : QObject(parent)
-    , gameManager_(gameManager)
+    , gameEngine(std::move(engine))
 {}
 
-void CEnemyTanksController::initialize(QQmlApplicationEngine *engine)
+void CEnemyTanksController::initialize(QQmlApplicationEngine* engine)
 {
-    if (!engine) {
-        Log(FATAL) << "Engine is nullptr";
-        return;
-    }
+    LogIfNullReturn(gameEngine, "Game engine is nullptr");
 
     auto context = engine->rootContext();
-    if (!context) {
-        Log(FATAL) << "Context is nullptr";
-        return;
-    }
+    LogIfNullReturn(context, "Context is nullptr");
 
     context->setContextProperty("enemyTanksController", this);
+
+    gameEngine->loadEnemyTanks();
 }
-QList<CEnemyTank *> CEnemyTanksController::getEmemyTanks()
+QList<CTank*> CEnemyTanksController::getEnemyTanks()
 {
-    gameManager_->load_ememy_tanks();
-    return gameManager_->ememy_tanks();
+    return gameEngine->enemyTanks();
+}
+void CEnemyTanksController::onEnemyTanksChanged()
+{
+    emitEnemyTanksChanged();
+}
+void CEnemyTanksController::emitEnemyTanksChanged()
+{
+    Log(INFO) << "Enemy tanks changed in CEnemyTanksController";
+    emit enemyTanksChanged();
 }

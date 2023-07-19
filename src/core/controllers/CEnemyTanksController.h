@@ -4,22 +4,29 @@
 
 #include <QObject>
 
-#include "implementations/CPlayerTank.h"
+#include "Engine/CGameEngine.h"
+#include "implementations/CTank.h"
 #include "interfaces/IController.h"
-#include "managers/CGameManager.h"
 
 class CEnemyTanksController : public QObject, public IController
 {
     Q_OBJECT
-    Q_PROPERTY(QList<CEnemyTank *> ememyTanks READ getEmemyTanks CONSTANT)
+    Q_PROPERTY(QList<CTank*> enemyTanks READ getEnemyTanks NOTIFY enemyTanksChanged)
 public:
-    explicit CEnemyTanksController(std::shared_ptr<CGameManager> gameManager, QObject *parent = nullptr);
+    explicit CEnemyTanksController(std::shared_ptr<CGameEngine> engine, QObject* parent = nullptr);
     ~CEnemyTanksController() override = default;
 
-    void initialize(QQmlApplicationEngine *engine) override;
+    void initialize(QQmlApplicationEngine* engine) override;
+    QList<CTank*> getEnemyTanks();
 
-    QList<CEnemyTank *> getEmemyTanks();
+public slots:
+    void onEnemyTanksChanged();
+
+signals:
+    void enemyTanksChanged();
 
 private:
-    std::shared_ptr<CGameManager> gameManager_;
+    void emitEnemyTanksChanged();
+
+    std::shared_ptr<CGameEngine> gameEngine;
 };
