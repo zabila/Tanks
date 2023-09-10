@@ -4,8 +4,8 @@
 
 #include <QObject>
 
-#include "pod/Point.h"
 #include "interfaces/IBullet.h"
+#include "pod/Point.h"
 
 class CGameEngine;
 class CBullet : public QObject, public IBullet

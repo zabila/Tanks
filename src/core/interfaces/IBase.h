@@ -41,3 +41,5 @@ public:
  * This macro is necessary for the IBase interface to be recognized by the Qt meta-object system and
  * to enable features such as dynamic_cast and qobject_cast.
 88 */
+
+Q_DECLARE_INTERFACE(IBase, "com.example.IBase")

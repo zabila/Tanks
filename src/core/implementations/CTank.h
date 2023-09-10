@@ -30,8 +30,7 @@ public:
 
     Q_INVOKABLE void shoot() override;
     Q_INVOKABLE void draw() override;
-    Q_INVOKABLE void extracted();
-    void move(MyEnum::Direction direction) override;
+    Q_INVOKABLE void move(MyEnum::Direction direction) override;
 
     int size() const;
 
@@ -40,6 +39,9 @@ signals:
 
 private:
     void onPositionChanged();
+    void handleObjectCollision(IDrawable* collide_object);
+    void moveInDirection(MyEnum::Direction direction);
+    void restorePosition();
 
     const int id_;
     TankData data_;

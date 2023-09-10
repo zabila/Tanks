@@ -24,42 +24,52 @@ void CTank::draw()
 
 void CTank::move(MyEnum::Direction direction)
 {
-    auto save_position = *position_;
-    switch (direction) {
-    case MyEnum::Direction::UP:
-        position_->setY(position_->y() - speed_);
-        break;
-    case MyEnum::Direction::DOWN:
-        position_->setY(position_->y() + speed_);
-        break;
-    case MyEnum::Direction::LEFT:
-        position_->setX(position_->x() - speed_);
-        break;
-    case MyEnum::Direction::RIGHT:
-        position_->setX(position_->x() + speed_);
-        break;
-    }
+    moveInDirection(direction);
 
     if (!gameEngine_->inRangOfMap(position_->value())) {
-        *position_ = save_position;
+        restorePosition();
         Log(WARNING) << "Tank is out of map";
         return;
     }
 
     auto [collide_object, is_collide] = gameEngine_->checkingCollisions(this);
     if (is_collide) {
-        *position_ = save_position;
-
-        const MyEnum::ObjectType type = collide_object->type();
-        if (type == MyEnum::ObjectType::BULLET) {
-            gameEngine_->detroitObject(this);
-        } else if (type == MyEnum::ObjectType::TANK) {
-            int id = collide_object->id();
-            Log(INFO) << "Tanks collide. Id: " << id;
-        }
+        restorePosition();
+        handleObjectCollision(collide_object);
     }
 
     onPositionChanged();
+}
+
+void CTank::moveInDirection(MyEnum::Direction direction)
+{
+    previous_position_ = *position_;
+
+    switch (direction) {
+    case MyEnum::Direction::UP:
+        position_->setY(this->position_->y() - this->speed_);
+        break;
+    case MyEnum::Direction::DOWN:
+        position_->setY(this->position_->y() + this->speed_);
+        break;
+    case MyEnum::Direction::LEFT:
+        position_->setX(this->position_->x() - this->speed_);
+        break;
+    case MyEnum::Direction::RIGHT:
+        position_->setX(this->position_->x() + this->speed_);
+        break;
+    }
+}
+
+void CTank::handleObjectCollision(IDrawable* collide_object)
+{
+    const MyEnum::ObjectType type = collide_object->type();
+    if (type == MyEnum::ObjectType::BULLET) {
+        this->gameEngine_->detroitObject(this);
+    } else if (type == MyEnum::ObjectType::TANK) {
+        int id = collide_object->id();
+        Log(INFO) << "Tanks collide. Id: " << id;
+    }
 }
 
 void CTank::onPositionChanged()
@@ -109,4 +119,9 @@ int CTank::size() const
 MyEnum::ObjectType CTank::type() const
 {
     return MyEnum::ObjectType::TANK;
+}
+
+void CTank::restorePosition()
+{
+    *position_ = previous_position_;
 }
